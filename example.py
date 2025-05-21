@@ -1,4 +1,4 @@
-from src.greedysim import GreedySim
+from src.greedy_sim import GreedySim
 
 def main():
     n_nodes = 13
