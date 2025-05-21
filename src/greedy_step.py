@@ -1,4 +1,5 @@
 from collections import deque
+from src.helpers import save_step_candidates
 
 class GreedyStep():
     def __init__(self, tree):
@@ -36,7 +37,7 @@ class GreedyStep():
             
         return visited
 
-    def get_node_to_protect(self, candidates, firefighter):
+    def get_node_to_protect(self, candidates, firefighter, step_dir):
         """
         Selecciona el nodo a proteger basado en el subarbol más grande
         """
@@ -68,7 +69,14 @@ class GreedyStep():
                     print(f'Actual protecting node: {firefighter.protecting_node} has {candidates_depths[firefighter.protecting_node]} nodes')
                     print(f'New protecting node: {node_to_protect} has {candidates_depths[node_to_protect]} nodes')
                     print('!'*50)
+            
+            # Save current calculation
+            save_step_candidates(candidates, candidates_depths, firefighter.protecting_node, candidates_time[firefighter.protecting_node],  firefighter.get_remaining_time(), step_dir)
+
             return firefighter.protecting_node, candidates_time[firefighter.protecting_node]
+        
+        # Save current calculation
+        save_step_candidates(candidates, candidates_depths, node_to_protect, candidates_time[node_to_protect],  firefighter.get_remaining_time(), step_dir)
 
         return node_to_protect, candidates_time[node_to_protect]
         
@@ -160,7 +168,7 @@ class GreedyStep():
 
         return final_candidates
 
-    def select_action(self, env):
+    def select_action(self, env, step_dir):
         """
         - Seleccion de un nodo a proteger: se selecciona el nodo con el subarbol mas grande (aunque este mas lejos)
         - Se mueve el bombero al nodo seleccionado
@@ -169,10 +177,9 @@ class GreedyStep():
         """
         
         candidates = self.get_candidates(env)
-        node_to_protect, node_time = self.get_node_to_protect(candidates, env.firefighter)
-        print(f'Node to protect: {node_to_protect} | Time to reach: {node_time}')
+        node_to_protect, node_time = self.get_node_to_protect(candidates, env.firefighter, step_dir)
         
-        if node_to_protect:
+        if node_to_protect is not None:
             node_pos = env.tree.nodes_positions[node_to_protect]
             if(env.firefighter.get_remaining_time() >= node_time):
                 env.state.protected_nodes.add(node_to_protect)

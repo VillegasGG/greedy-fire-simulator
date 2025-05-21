@@ -18,3 +18,16 @@ def save_history(history, output_dir):
     file_route = output_dir / "history.json"
     with open(file_route, 'w', encoding='utf-8') as file:
         json.dump(history, file, indent=2)
+
+def save_step_candidates(candidates, depths,  node_selected, time, remaining_time, step_dir):
+    file_route = step_dir / f"candidates_{remaining_time}.json"
+    
+    with open(file_route, 'w', encoding='utf-8') as file:
+        json.dump({
+            "candidates": [(int(node[0]), float(node[1])) for node in candidates],
+            "depths": {int(node): int(depth) for node, depth in depths.items()},
+            "node_selected": int(node_selected),
+            "time": float(time),
+            "remaining_time": float(remaining_time)
+        }, file, indent=2)
+    file.close()
