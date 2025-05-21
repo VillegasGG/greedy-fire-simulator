@@ -160,7 +160,7 @@ class GreedyStep():
 
         return final_candidates
 
-    def select_action(self, env, step):
+    def select_action(self, env):
         """
         - Seleccion de un nodo a proteger: se selecciona el nodo con el subarbol mas grande (aunque este mas lejos)
         - Se mueve el bombero al nodo seleccionado

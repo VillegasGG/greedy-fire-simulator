@@ -11,7 +11,7 @@ def main():
     greedy_simulation = Simulation(GreedyStep(my_tree), my_tree)
     my_tree.save_positions_to_json("data/positions.json")
     my_tree.save_edges_to_json("data/edges.json")
-    greedy_simulation.run_simulation(True)
+    greedy_simulation.run_simulation()
  
 if __name__ == "__main__":
     main()
