@@ -3,10 +3,10 @@ from src.fire_state import FireState
 import copy
 
 class Environment:
-    def __init__(self, tree):
+    def __init__(self, tree, speed):
         self.tree = tree
         self.state = FireState(tree)
-        self.firefighter = Firefighter(tree)
+        self.firefighter = Firefighter(tree, speed)
 
     def copy(self):
         """

@@ -3,8 +3,8 @@ from src.helpers import save_results, save_history
 from src.environment import Environment
 
 class Simulation:
-    def __init__(self, policy, tree):
-        self.env = Environment(tree)
+    def __init__(self, policy, tree, speed):
+        self.env = Environment(tree, speed)
         self.policy = policy
         self.history = []
 
