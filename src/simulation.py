@@ -1,6 +1,6 @@
 import time
-from helpers import save_results
-from environment import Environment
+from src.helpers import save_results
+from src.environment import Environment
 
 class Simulation:
     def __init__(self, policy, tree):

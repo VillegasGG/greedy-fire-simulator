@@ -1,5 +1,5 @@
-from firefighter import Firefighter
-from fire_state import FireState
+from src.firefighter import Firefighter
+from src.fire_state import FireState
 import copy
 
 class Environment:
