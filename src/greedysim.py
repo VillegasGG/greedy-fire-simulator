@@ -4,7 +4,7 @@ from src.greedy_step import GreedyStep
 from pathlib import Path
 
 class GreedySim:
-    def __init__(self, n_nodes, root_degree, type_root_degree, ff_speed, output_dir="output"):	
+    def __init__(self, n_nodes:int, root_degree:int, type_root_degree:str, ff_speed:float, output_dir="output"):	
         """
         Initialize the GreedySim class with the number of nodes, root degree, and type of root degree.
         :param n_nodes: Number of nodes in the tree
