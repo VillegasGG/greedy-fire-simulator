@@ -5,7 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from simulation import Simulation
 from config_tree import my_tree
-from policies.greedy_step import GreedyStep
+from greedy_step import GreedyStep
 
 def main():
     greedy_simulation = Simulation(GreedyStep(my_tree), my_tree)
