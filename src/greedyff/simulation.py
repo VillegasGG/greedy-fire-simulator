@@ -1,7 +1,7 @@
 import time
 from pathlib import Path
-from src.helpers import save_results, save_history
-from src.environment import Environment
+from src.greedyff.helpers import save_results, save_history
+from src.greedyff.environment import Environment
 
 class Simulation:
     def __init__(self, policy, tree, speed, output_dir):

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='greedy-fire-sim',
+    name='greedyff',
     version='0.1.0',
     description='A greedy simulation for firefighter problem',
     author='Getsemani Villegas',

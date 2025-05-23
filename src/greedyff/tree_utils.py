@@ -1,6 +1,5 @@
 from ctypes import *
 import numpy as np
-from collections import deque
 
 class Tree:
     def __init__(self, nodes, edges, nodes_positions=None, is_adjacency_matrix=False):
