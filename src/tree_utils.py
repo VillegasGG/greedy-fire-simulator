@@ -1,5 +1,6 @@
 from ctypes import *
 import numpy as np
+from collections import deque
 
 class Tree:
     def __init__(self, nodes, edges, nodes_positions=None, is_adjacency_matrix=False):
@@ -113,9 +114,8 @@ class Tree:
             
             ancestors.append(c_node)
             
-            
         return np.array(ancestors)
-
+        
     def get_subtree_nodes(self, node):
         """
         Obtiene todos los nodos en el subárbol a partir de un nodo dado.

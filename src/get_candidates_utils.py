@@ -7,13 +7,21 @@ def is_protected_by_ancestor(node, tree, state):
             return True
     return False
 
+def is_protected_by_descendant(node, tree, state):
+    path = tree.get_subtree_nodes(node)
+    for descendant in path:
+        if descendant in state.protected_nodes:
+            return True
+    return False
+
 def get_not_protected_nodes(tree, state):
     candidates = set()
     unnafected_nodes = set(tree.nodes) - state.burned_nodes - state.protected_nodes - state.burning_nodes
 
     for element in unnafected_nodes:
-        is_protected = is_protected_by_ancestor(element, tree, state)
-        if not is_protected:
+        is_protected_anc = is_protected_by_ancestor(element, tree, state)
+        is_protected_desc = is_protected_by_descendant(element, tree, state)
+        if not is_protected_anc and not is_protected_desc:
             candidates.add(element)
 
     return candidates
@@ -47,7 +55,7 @@ def steps_to_reach_all(tree, state):
     return layer
 
 
-def get_final_candidates(candidates, fire_time, time_ff_reach, firefighter):
+def get_final_candidates(candidates, fire_time, time_ff_reach, ff):
 
     final_candidates = set()
 
@@ -55,7 +63,7 @@ def get_final_candidates(candidates, fire_time, time_ff_reach, firefighter):
     for candidate in candidates:
         time_ff_reach_candidate = time_ff_reach[candidate]
         time_to_burn_candidate = fire_time[candidate]
-        remaining_time = firefighter.get_remaining_time()
+        remaining_time = ff.get_remaining_time()
         if time_ff_reach_candidate > time_to_burn_candidate:
             continue
         elif remaining_time < 1:
@@ -71,16 +79,16 @@ def get_final_candidates(candidates, fire_time, time_ff_reach, firefighter):
 
     return final_candidates
 
-def get_candidates(tree, state, firefighter):
+def get_candidates(tree, state, ff):
     first_candidates = get_not_protected_nodes(tree, state)
 
-    ff_distances = firefighter.get_distances_to_nodes(first_candidates)
+    ff_distances = ff.get_distances_to_nodes(first_candidates)
     fire_time = steps_to_reach_all(tree, state)
 
     time_ff_reach = {} # Time taken to reach each candidate
     for candidate in first_candidates:
-        time_ff_reach[candidate] = ff_distances[candidate] / firefighter.speed
+        time_ff_reach[candidate] = ff_distances[candidate] / ff.speed
     
-    final_candidates = get_final_candidates(first_candidates, fire_time, time_ff_reach, firefighter)
+    final_candidates = get_final_candidates(first_candidates, fire_time, time_ff_reach, ff)
 
     return final_candidates

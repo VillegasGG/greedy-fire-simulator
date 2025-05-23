@@ -4,17 +4,18 @@ from src.helpers import save_results, save_history
 from src.environment import Environment
 
 class Simulation:
-    def __init__(self, policy, tree, speed):
+    def __init__(self, policy, tree, speed, output_dir):
         self.env = Environment(tree, speed)
         self.policy = policy
         self.history = []
+        self.output_dir = Path(output_dir)
 
     def firefighter_action(self, step):
         """
         Turno del bombero
         """
         # Create path for step directory
-        step_dir = Path(f"output/step_{step}")
+        step_dir = self.output_dir / "steps_log" / f"step_{step}"
         step_dir.mkdir(parents=True, exist_ok=True)
 
         exist_candidate = True

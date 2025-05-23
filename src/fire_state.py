@@ -10,16 +10,3 @@ class FireState:
 
     def set_burning_nodes(self, burning_nodes):
         self.burning_nodes = burning_nodes
-
-    def display_state(self):
-        """
-        Estado actual del incendio
-        """
-        burning_nodes = {int(node) for node in self.burning_nodes}
-        burned_nodes = {int(node) for node in self.burned_nodes}
-
-        print("Burned: ", burned_nodes)
-        print("Burning: ", burning_nodes)
-
-        return burning_nodes, burned_nodes
-        

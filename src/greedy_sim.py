@@ -36,7 +36,7 @@ class GreedySim:
         self.my_tree.save_positions_to_json(self.output_dir / "data" / "positions.json")
         self.my_tree.save_edges_to_json(self.output_dir / "data" / "edges.json")
 
-        simulation = Simulation(GreedyStep(self.my_tree), self.my_tree, self.ff_speed)
+        simulation = Simulation(GreedyStep(self.my_tree), self.my_tree, self.ff_speed, self.output_dir)
         simulation.run_simulation(self.output_dir)
 
 
