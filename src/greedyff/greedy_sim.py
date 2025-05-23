@@ -1,6 +1,6 @@
-from src.greedyff.simulation import Simulation
-from src.greedyff.tree_generator import generate_random_tree
-from src.greedyff.greedy_step import GreedyStep
+from greedyff.simulation import Simulation
+from greedyff.tree_generator import generate_random_tree
+from greedyff.greedy_step import GreedyStep
 from pathlib import Path
 
 class GreedySim:

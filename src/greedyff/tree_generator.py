@@ -1,6 +1,6 @@
 import networkx as nx
 import numpy as np
-from src.greedyff.tree_utils import Tree
+from greedyff.tree_utils import Tree
 
 def generate_prufer_sequence(n_nodes):
     """

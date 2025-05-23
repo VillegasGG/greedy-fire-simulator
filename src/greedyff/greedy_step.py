@@ -1,5 +1,5 @@
-from src.greedyff.helpers import save_step_candidates
-from src.greedyff.get_candidates_utils import get_candidates
+from greedyff.helpers import save_step_candidates
+from greedyff.get_candidates_utils import get_candidates
 
 class GreedyStep():
     def __init__(self, tree):

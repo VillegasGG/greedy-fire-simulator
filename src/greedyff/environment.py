@@ -1,5 +1,5 @@
-from src.greedyff.firefighter import Firefighter
-from src.greedyff.fire_state import FireState
+from greedyff.firefighter import Firefighter
+from greedyff.fire_state import FireState
 import copy
 
 class Environment:
