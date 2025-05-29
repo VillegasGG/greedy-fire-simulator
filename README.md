@@ -14,6 +14,3 @@ Node selection is done using a greedy strategy that consists of selecting the no
 - Simulates fire spread step by step.
 - At each time step, selects the best node to protect using a greedy policy.
 - Returns the results in a directory.
-
-### Reusability
-This module is designed to be reused in other projects.

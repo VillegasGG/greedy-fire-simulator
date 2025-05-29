@@ -13,15 +13,6 @@ class GreedySim:
             type_root_degree:str = None, 
             ff_speed:float = 1.0, 
             output_dir = "output"):	
-        """
-        Initialize the GreedySim class 
-        :param tree: Tree object to be used in the simulation
-        :param n_nodes: Number of nodes in the tree
-        :param root_degree: Degree of the root node
-        :param type_root_degree: Type of root degree ('min' or 'max')
-        :param ff_speed: Speed of the firefighter
-        :param output_dir: Directory to save the output files
-        """
         
         self.ff_speed = ff_speed
         self.output_dir = Path(output_dir)
