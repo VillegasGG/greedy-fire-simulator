@@ -4,61 +4,70 @@ from greedyff.greedy_step import GreedyStep
 from pathlib import Path
 
 class GreedySim:
-    def __init__(
-            self, 
-            tree = None, 
-            root = None,
-            n_nodes:int = None, 
-            root_degree:int = None, 
-            type_root_degree:str = None, 
-            ff_speed:float = 1.0, 
-            output_dir = "output"):	
-        
-        self.ff_speed = ff_speed
-        self.output_dir = Path(output_dir)
-        
-        # If a tree is provided (check by attribute existence)
-        if hasattr(tree, 'nodes') and hasattr(tree, 'edges'):
-
-            # Root validation
-            if root is None or root not in tree.nodes:
-                raise ValueError(f"Root {root} is not in the provided tree nodes: {tree.nodes}")
-            
-            self.tree = tree
-            self.root = root
-
-            # If no necessary parameters are provided, use the tree's properties but advise
-            if n_nodes is not None or root_degree is not None or type_root_degree is not None:
-                print("Warning: Tree provided, but n_nodes, root_degree, or type_root_degree are set. Using tree properties instead.")
-
-        # If not tree is provided, generate a random tree
+    def __init__(self, env = None, ff_speed:float = 1.0, output_dir = "output"):	
+        if env is not None:
+            self.env = env
+            self.d_tree = env.tree
+            self.ff_speed = env.firefighter.speed
         else:
-            # Validate parameters
-            if n_nodes is None or root_degree is None or type_root_degree is None:
-                raise ValueError("No tree is provided! n_nodes, root_degree, and type_root_degree must be specified.")
+            self.env = None
+            self.ff_speed = ff_speed
         
-            self.n_nodes = n_nodes
-            self.root_degree = root_degree
-            self.type_root_degree = type_root_degree
-            self.tree, self.sequence, self.root = generate_random_tree(self.n_nodes, self.root_degree, self.type_root_degree)
+        self.output_dir = Path(output_dir)
+                    
+
+    def run(self, tree=None, root=None):
+        """
+        Run the greedy simulation from beginning to end.
+        If an environment is provided, it will use the existing env otherwise it will create a new one.
+        A tree is required to initialize the simulation if no environment is provided.
+        """
+        if self.env is None:
+            print("No environment provided, creating a new one.")
             
-        self.my_tree, _ = self.tree.convert_to_directed(self.root)
-
-    def run(self):
-        """
-        Run the greedy simulation.
-        """
-
+            # Validate a tree is provided
+            if tree is None:
+                raise ValueError("A tree must be provided to initialize the simulation.")
+            
+            # Generate directed tree from the provided tree
+            self.d_tree, _ = tree.convert_to_directed(root)
+            
         # Create the output and data directories if they don't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.output_dir.joinpath("data").mkdir(parents=True, exist_ok=True)
+        print(f"Output directory created at: {self.output_dir}")
 
         # Save the tree structure and sequence to JSON files
-        self.my_tree.save_positions_to_json(self.output_dir / "data" / "positions.json")
-        self.my_tree.save_edges_to_json(self.output_dir / "data" / "edges.json")
+        self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
+        self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
 
-        simulation = Simulation(GreedyStep(self.my_tree), self.my_tree, self.ff_speed, self.output_dir)
-        simulation.run_simulation(self.output_dir)
+        if self.env is None:
+            simulation = Simulation(policy=GreedyStep(self.d_tree), tree=self.d_tree, speed=self.ff_speed, output_dir=self.output_dir)
+            simulation.run_simulation(self.output_dir)
+        else:
+            simulation = Simulation(policy=GreedyStep(self.d_tree), enviroment=self.env, speed=self.ff_speed, output_dir=self.output_dir)
+            simulation.run_simulation(self.output_dir)
 
+    def step(self, env=None):
+        """
+        Execute a single step of the simulation.
+        """
+        if self.env is None and env is None:
+            raise ValueError("An environment must be provided to execute a step.")
+        if self.env is not None and env is not None:
+            raise ValueError("Environment already exists, cannot provide a new one.")
+        if self.env is None:
+            self.env = env
+            self.d_tree = env.tree
+            self.ff_speed = env.firefighter.speed
 
+        policy = GreedyStep(self.d_tree)
+
+        sim = Simulation(policy=policy, speed=self.ff_speed, output_dir=self.output_dir, enviroment=self.env)
+
+        sim.execute_step(0)
+
+        return sim.env
         
+
+    

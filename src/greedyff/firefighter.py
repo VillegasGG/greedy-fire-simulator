@@ -2,11 +2,11 @@ import random
 import numpy as np
 
 class Firefighter:
-    def __init__(self, tree, speed = .9):
+    def __init__(self, tree, speed, ff_position=None, remaining_time=None):
         self.speed = speed
-        self.position = None
+        self.position = ff_position
         self.tree = tree
-        self.__remaining_time__ = None
+        self.remaining_time = remaining_time
         self.protecting_node = None
 
     def add_random_initial_position(self):
@@ -35,13 +35,13 @@ class Firefighter:
         return distances
     
     def init_remaining_time(self):
-        self.__remaining_time__ = 1
+        self.remaining_time = 1
     
     def get_remaining_time(self):
-        return self.__remaining_time__
+        return self.remaining_time
     
     def decrease_remaining_time(self, time_to_decrease):
-        self.__remaining_time__ -= time_to_decrease
+        self.remaining_time -= time_to_decrease
 
     def calc_new_pos(self, node_position):
         distance_between = np.linalg.norm(node_position - self.position)

@@ -3,10 +3,14 @@ from greedyff.fire_state import FireState
 import copy
 
 class Environment:
-    def __init__(self, tree, speed):
+    def __init__(self, tree, speed, ff_position, remaining_time, fire_state=None):
         self.tree = tree
-        self.state = FireState(tree)
-        self.firefighter = Firefighter(tree, speed)
+        self.firefighter = Firefighter(tree, speed, ff_position, remaining_time)
+
+        if fire_state is None:
+            self.state = FireState(tree)
+        else:
+            self.state = fire_state
 
     def copy(self):
         """

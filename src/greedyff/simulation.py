@@ -4,11 +4,21 @@ from greedyff.helpers import save_results, save_history
 from greedyff.environment import Environment
 
 class Simulation:
-    def __init__(self, policy, tree, speed, output_dir):
-        self.env = Environment(tree, speed)
+    def __init__(self, policy, speed, output_dir, tree = None, enviroment = None, ff_position=None, remaining_time=None):
         self.policy = policy
         self.history = []
         self.output_dir = Path(output_dir)
+
+        if enviroment is None:
+            try:
+                self.env = Environment(tree, speed, ff_position, remaining_time)
+            except Exception as e:
+                raise ValueError(f"Error initializing environment: {e}. Ensure the tree is valid and parameters are correct.") from e
+        else:
+            if hasattr(enviroment, 'tree') and hasattr(enviroment, 'firefighter'):
+                self.env = enviroment
+            else:
+                raise ValueError("Provided environment does not have the required attributes (tree and firefighter).")
 
     def firefighter_action(self, step):
         """
@@ -33,7 +43,8 @@ class Simulation:
             - Turno del bombero dado que el anterior fue propagacion o inicio del fuego
             - Turno de la propagacion del fuego
         """
-        self.env.firefighter.init_remaining_time()
+        if self.env.firefighter.get_remaining_time() is None or self.env.firefighter.get_remaining_time() <= 0:
+            self.env.firefighter.init_remaining_time()
 
         if not self.env.state.burning_nodes:
             self.env.start_fire(self.env.tree.root)
