@@ -91,6 +91,13 @@ class GreedyStep():
                 env.state.protected_nodes.add(node_to_protect)
                 env.firefighter.move_to_node(node_pos, node_time)
                 env.firefighter.protecting_node = None
+                env.update_history({
+                    "step": env.firefighter.get_remaining_time(),
+                    "burned_nodes": [int(node) for node in env.state.burned_nodes],
+                    "burning_nodes": [int(node) for node in env.state.burning_nodes],
+                    "protected_nodes": [int(node) for node in env.state.protected_nodes],
+                    "firefighter_position": [float(pos) for pos in env.firefighter.position]
+                })
             else:
                 env.firefighter.move_fraction(node_pos)
                 env.firefighter.protecting_node = node_to_protect

@@ -6,6 +6,7 @@ class Environment:
     def __init__(self, tree, speed, ff_position, remaining_time, fire_state=None):
         self.tree = tree
         self.firefighter = Firefighter(tree, speed, ff_position, remaining_time)
+        self.history = []
 
         if fire_state is None:
             self.state = FireState(tree)
@@ -55,4 +56,8 @@ class Environment:
                     return False
         return True
 
-
+    def update_history(self, dict_info):
+        """
+        Actualiza el historial de la simulacion
+        """
+        self.history.append(dict_info)

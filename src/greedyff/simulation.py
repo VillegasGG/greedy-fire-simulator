@@ -6,7 +6,6 @@ from greedyff.environment import Environment
 class Simulation:
     def __init__(self, policy, speed, output_dir, tree = None, enviroment = None, ff_position=None, remaining_time=None):
         self.policy = policy
-        self.history = []
         self.output_dir = Path(output_dir)
 
         if enviroment is None:
@@ -51,18 +50,6 @@ class Simulation:
         else:
             self.firefighter_action(step)
             self.env.propagate()
-
-    def update_history(self, step):
-        """
-        Actualiza el historial de la simulacion
-        """
-        self.history.append({
-            "step": step,
-            "burned_nodes": [int(node) for node in self.env.state.burned_nodes],
-            "burning_nodes": [int(node) for node in self.env.state.burning_nodes],
-            "protected_nodes": [int(node) for node in self.env.state.protected_nodes],
-            "firefighter_position": [float(pos) for pos in self.env.firefighter.position]
-        })
     
     def run_simulation(self, output_dir):
         step = -1
@@ -73,14 +60,13 @@ class Simulation:
             step += 1
             if step>0: print(f"{'#' * 50}\nWHEN STATE {step-1}:")
             self.execute_step(step)
-            self.update_history(step)
         
         end_time = time.perf_counter()
             
         print('#' * 50)
 
         save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
-        save_history(self.history, output_dir)
+        save_history(self.env.history, output_dir)
 
         print('-' * 50 + f"\nDaño: {len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)}\n" + '-' * 50)
         print(f"Tiempo de ejecución total: {end_time - start_time:.4f} segundos")

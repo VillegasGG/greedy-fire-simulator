@@ -5,7 +5,7 @@ from greedyff.simulation import Simulation
 from greedyff.environment import Environment
 
 def example_with_initialized_sim():
-    n_nodes = 15
+    n_nodes = 50
     root_degree = 5
     type_root_degree = 'min'
     ff_speed = 1
@@ -48,9 +48,19 @@ def example_after_step():
     print("After second step:")
     env2.firefighter.print_info()
     env2.state.print_info()
+    print(env2.history)
 
+    greedy_simulation3 = GreedySim(env=env2, ff_speed=ff_speed, output_dir="output_after2")
+    env3 = greedy_simulation3.step()
+    print("After third step:")
+    env3.firefighter.print_info()
+    env3.state.print_info()
+    print(env3.history)
+    print("***********")
 
-
+    # end 
+    greedy_simulation4 = GreedySim(env=env3, ff_speed=ff_speed, output_dir="output_after3")
+    greedy_simulation4.run()
 
 def main():
     example_after_step()
