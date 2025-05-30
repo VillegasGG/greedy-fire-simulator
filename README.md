@@ -14,3 +14,13 @@ Node selection is done using a greedy strategy that consists of selecting the no
 - Simulates fire spread step by step.
 - At each time step, selects the best node to protect using a greedy policy.
 - Returns the results in a directory.
+
+### Principal methods
+
+- GreedySim.run(): Runs the full simulation
+- GreedySim.step(): Executes a single simulation step
+
+
+### Utility functions
+
+- get_candidates(tree, state, ff):   This function is **not** part of any class, so it can be used directly from your code to obtain the candidate nodes to protect at each step.

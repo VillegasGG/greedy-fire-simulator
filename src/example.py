@@ -7,7 +7,7 @@ def example_with_tree():
     root_degree = 5
     type_root_degree = 'min'
     ff_speed = 1
-    dir_name = "output2"
+    dir_name = "output_tree"
     tree, _, root = generate_random_tree(n_nodes, root_degree, type_root_degree)
 
     greedy_simulation = GreedySim(ff_speed=ff_speed, output_dir=dir_name)
