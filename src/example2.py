@@ -22,7 +22,8 @@ def example_with_initialized_sim():
         ff_speed=ff_speed, 
         output_dir=dir_name)
     
-    greedy_simulation.run(tree, root)
+    damage = greedy_simulation.run(tree, root)
+    print(f"Total damage: {damage}")
 
 def example_after_step():
     # Generate a random tree and add a firefighter
@@ -73,7 +74,7 @@ def example_after_step():
     greedy_simulation4.run()
 
 def main():
-    example_after_step()
+    example_with_initialized_sim()
     
 
 if __name__ == "__main__":
