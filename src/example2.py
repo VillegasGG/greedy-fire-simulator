@@ -71,10 +71,11 @@ def example_after_step():
 
     # Run the rest of the simulation with the same environment
     greedy_simulation4 = GreedySim(env=env3, ff_speed=ff_speed, output_dir="output_after3")
-    greedy_simulation4.run()
+    damage = greedy_simulation4.run()
+    print(f"Total damage after all steps: {damage}")
 
 def main():
-    example_with_initialized_sim()
+    example_after_step()
     
 
 if __name__ == "__main__":
