@@ -38,8 +38,8 @@ class GreedySim:
         print(f"Output directory created at: {self.output_dir}")
 
         # Save the tree structure and sequence to JSON files
-        self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
-        self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
+        # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
+        # self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
 
         if self.env is None:
             simulation = Simulation(policy=GreedyStep(self.d_tree), tree=self.d_tree, speed=self.ff_speed, output_dir=self.output_dir)
