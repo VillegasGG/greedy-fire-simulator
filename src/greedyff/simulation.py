@@ -70,3 +70,6 @@ class Simulation:
 
         print('-' * 50 + f"\nDaño: {len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)}\n" + '-' * 50)
         print(f"Tiempo de ejecución total: {end_time - start_time:.4f} segundos")
+
+        # Return damage
+        return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

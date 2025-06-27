@@ -11,8 +11,9 @@ def example_with_tree():
     tree, _, root = generate_random_tree(n_nodes, root_degree, type_root_degree)
 
     greedy_simulation = GreedySim(ff_speed=ff_speed, output_dir=dir_name)
-    greedy_simulation.run(tree, root)
+    damage = greedy_simulation.run(tree, root)
 
+    print(f"Total damage: {damage}")
 
 def main():
     example_with_tree()

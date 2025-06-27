@@ -43,10 +43,12 @@ class GreedySim:
 
         if self.env is None:
             simulation = Simulation(policy=GreedyStep(self.d_tree), tree=self.d_tree, speed=self.ff_speed, output_dir=self.output_dir)
-            simulation.run_simulation(self.output_dir)
+            damage = simulation.run_simulation(self.output_dir)
         else:
             simulation = Simulation(policy=GreedyStep(self.d_tree), enviroment=self.env, speed=self.ff_speed, output_dir=self.output_dir)
-            simulation.run_simulation(self.output_dir)
+            damage = simulation.run_simulation(self.output_dir)
+
+        return damage
 
     def step(self, env=None):
         """
