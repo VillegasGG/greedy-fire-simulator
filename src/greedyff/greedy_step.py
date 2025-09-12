@@ -50,17 +50,8 @@ class GreedyStep():
         max_depth = max(candidates_depths.values())
         
         node_to_protect =  [node for node, depth in candidates_depths.items() if depth == max_depth][0]
-        print('Node protected: ' + str(int(node_to_protect)) + ' Safe: ' + str(max_depth) + ' nodes')
 
         if(firefighter.protecting_node):
-            if(firefighter.protecting_node != node_to_protect):
-                if candidates_depths[firefighter.protecting_node] < candidates_depths[node_to_protect]:
-                    print('!'*50)
-                    print(f'FF is moving to node {node_to_protect} but better option is {firefighter.protecting_node}')
-                    print(f'Actual protecting node: {firefighter.protecting_node} has {candidates_depths[firefighter.protecting_node]} nodes')
-                    print(f'New protecting node: {node_to_protect} has {candidates_depths[node_to_protect]} nodes')
-                    print('!'*50)
-            
             # Save current calculation
             save_step_candidates(candidates, candidates_depths, firefighter.protecting_node, candidates_time[firefighter.protecting_node],  firefighter.get_remaining_time(), step_dir)
 
@@ -83,31 +74,15 @@ class GreedyStep():
 
         candidates = get_candidates(env.tree, env.state, env.firefighter)
         node_to_protect, node_time = self.get_node_to_protect(candidates, env.firefighter, step_dir)
-        
-        if node_to_protect is not None:
-            print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
-            node_pos = env.tree.nodes_positions[node_to_protect]
-            if(env.firefighter.get_remaining_time() >= node_time):
-                env.state.protected_nodes.add(node_to_protect)
-                env.firefighter.move_to_node(node_pos, node_time)
-                env.firefighter.protecting_node = None
-                env.update_history({
-                    "step": env.firefighter.get_remaining_time(),
-                    "burned_nodes": [int(node) for node in env.state.burned_nodes],
-                    "burning_nodes": [int(node) for node in env.state.burning_nodes],
-                    "protected_nodes": [int(node) for node in env.state.protected_nodes],
-                    "firefighter_position": [float(pos) for pos in env.firefighter.position]
-                })
-            else:
-                env.firefighter.move_fraction(node_pos)
-                env.firefighter.protecting_node = node_to_protect
-                
-            env.firefighter.print_info()
-            return True
 
-        else:
+        if node_to_protect is None:
             print('No node to protect')
             return False
+        
+        print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
+        env.move(node_to_protect)
+        return True
+
 
 
 

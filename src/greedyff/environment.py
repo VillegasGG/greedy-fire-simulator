@@ -61,3 +61,30 @@ class Environment:
         Actualiza el historial de la simulacion
         """
         self.history.append(dict_info)
+
+    def move(self, node):
+        """
+        Mueve al bombero al nodo indicado, ya sea completamente o parcialmente
+        No recibe None como nodo!!
+        """
+        if node not in self.tree.nodes:
+            raise ValueError("The node to move to does not exist in the tree.")
+        
+        node_position = self.tree.nodes_positions[node]
+        ff_remaining_time = self.firefighter.get_remaining_time()
+        node_time = self.firefighter.calc_time_to_node(node_position)
+
+        if ff_remaining_time >= node_time:
+            self.state.protected_nodes.add(node)
+            self.firefighter.move_to_node(node_position, node_time)
+            self.firefighter.protecting_node = None
+            self.update_history({
+                "step": self.firefighter.get_remaining_time(),
+                "burned_nodes": [int(node) for node in self.state.burned_nodes],
+                "burning_nodes": [int(node) for node in self.state.burning_nodes],
+                "protected_nodes": [int(node) for node in self.state.protected_nodes],
+                "firefighter_position": [float(pos) for pos in self.firefighter.position]
+            })
+        else:
+            self.firefighter.move_fraction(node_position)
+            self.firefighter.protecting_node = node

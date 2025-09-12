@@ -58,7 +58,7 @@ class Simulation:
         
         while not self.env.is_completely_burned():
             step += 1
-            if step>0: print(f"{'#' * 50}\nWHEN STATE {step-1}:")
+            if step>0: print(f"{'#' * 50}\nSTATE {step-1}:")
             self.execute_step(step)
         
         end_time = time.perf_counter()

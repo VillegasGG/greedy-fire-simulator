@@ -63,9 +63,6 @@ class Firefighter:
         self.position = new_pos
         self.decrease_remaining_time(self.get_remaining_time())
 
-    def print_info(self):
-        print('-' * 50)
-        print('Firefighter info: ')
-        print(f'Position: {self.position} | Remaining time: {self.get_remaining_time()}')
-        print(f'Protecting node: {self.protecting_node}')
-        print('-' * 50)
+    def calc_time_to_node(self, node):
+        distance = self.get_distance_to_node(node)
+        return distance / self.speed
