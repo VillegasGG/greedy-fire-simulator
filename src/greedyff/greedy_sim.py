@@ -1,7 +1,6 @@
-from greedyff.simulation import Simulation
-from greedyff.tree_generator import generate_random_tree
-from greedyff.greedy_step import GreedyStep
 from pathlib import Path
+from greedyff.helpers import save_results, save_history
+from greedyff.greedy_step import GreedyStep
 
 class GreedySim:
     def __init__(self, env = None, ff_speed:float = 1.0, output_dir = "output"):	
@@ -41,12 +40,7 @@ class GreedySim:
         # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
         # self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
 
-        if self.env is None:
-            simulation = Simulation(policy=GreedyStep(self.d_tree), tree=self.d_tree, speed=self.ff_speed, output_dir=self.output_dir)
-            damage = simulation.run_simulation(self.output_dir)
-        else:
-            simulation = Simulation(policy=GreedyStep(self.d_tree), enviroment=self.env, speed=self.ff_speed, output_dir=self.output_dir)
-            damage = simulation.run_simulation(self.output_dir)
+        damage = self.run_simulation(self.output_dir)
 
         return damage
 
@@ -63,13 +57,54 @@ class GreedySim:
             self.d_tree = env.tree
             self.ff_speed = env.firefighter.speed
 
-        policy = GreedyStep(self.d_tree)
+        self.execute_step(0)
 
-        sim = Simulation(policy=policy, speed=self.ff_speed, output_dir=self.output_dir, enviroment=self.env)
+        return self.env
 
-        sim.execute_step(0)
+    def firefighter_action(self, step):
+        """
+        Turno del bombero
+        """
+        # Create path for step directory
+        step_dir = self.output_dir / "steps_log" / f"step_{step}"
+        step_dir.mkdir(parents=True, exist_ok=True)
 
-        return sim.env
-        
+        exist_candidate = True
 
+        while(self.env.firefighter.get_remaining_time() > 0 and exist_candidate):
+            exist_candidate = GreedyStep(self.d_tree).select_action(self.env, step_dir)
+            
+    def execute_step(self, step):
+        """
+        Ejecuta un paso de la simulacion:
+        A) Si no hay nodos quemados:
+            - Se inicia el fuego en el nodo raiz
+            - Se coloca un bombero en una posicion aleatoria
+        B) Si hay nodos quemados:
+            - Turno del bombero dado que el anterior fue propagacion o inicio del fuego
+            - Turno de la propagacion del fuego
+        """
+        if self.env.firefighter.get_remaining_time() is None or self.env.firefighter.get_remaining_time() <= 0:
+            self.env.firefighter.init_remaining_time()
+
+        if not self.env.state.burning_nodes:
+            self.env.start_fire(self.env.tree.root)
+        else:
+            self.firefighter_action(step)
+            self.env.propagate()
     
+    def run_simulation(self, output_dir):
+        step = -1
+        
+        while not self.env.is_completely_burned():
+            step += 1
+            # if step>0: print(f"{'#' * 50}\nSTATE {step-1}:")
+            self.execute_step(step)
+
+        save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
+        save_history(self.env.history, output_dir)
+
+        # print('-' * 50 + f"\nDaño: {len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)}\n" + '-' * 50)
+
+        # Return damage
+        return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

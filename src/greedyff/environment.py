@@ -72,7 +72,7 @@ class Environment:
         
         node_position = self.tree.nodes_positions[node]
         ff_remaining_time = self.firefighter.get_remaining_time()
-        node_time = self.firefighter.calc_time_to_node(node_position)
+        node_time = self.firefighter.calc_time_to_node(node)
 
         if ff_remaining_time >= node_time:
             self.state.protected_nodes.add(node)
@@ -88,3 +88,9 @@ class Environment:
         else:
             self.firefighter.move_fraction(node_position)
             self.firefighter.protecting_node = node
+
+    def log_state(self):
+        print(f"Burned Nodes: {self.state.burned_nodes}")
+        print(f"Burning Nodes: {self.state.burning_nodes}")
+        print(f"Protected Nodes: {self.state.protected_nodes}")
+        print(f"Protecting Node: {self.firefighter.protecting_node}")

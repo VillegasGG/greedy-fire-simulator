@@ -44,7 +44,6 @@ class GreedyStep():
             candidates_time[candidate[0]] = candidate[1]
 
         if not candidates_depths:
-            print('No candidates')
             return None, None
         
         max_depth = max(candidates_depths.values())
@@ -53,12 +52,12 @@ class GreedyStep():
 
         if(firefighter.protecting_node):
             # Save current calculation
-            save_step_candidates(candidates, candidates_depths, firefighter.protecting_node, candidates_time[firefighter.protecting_node],  firefighter.get_remaining_time(), step_dir)
+            # save_step_candidates(candidates, candidates_depths, firefighter.protecting_node, candidates_time[firefighter.protecting_node],  firefighter.get_remaining_time(), step_dir)
 
             return firefighter.protecting_node, candidates_time[firefighter.protecting_node]
         
         # Save current calculation
-        save_step_candidates(candidates, candidates_depths, node_to_protect, candidates_time[node_to_protect],  firefighter.get_remaining_time(), step_dir)
+        # save_step_candidates(candidates, candidates_depths, node_to_protect, candidates_time[node_to_protect],  firefighter.get_remaining_time(), step_dir)
 
         return node_to_protect, candidates_time[node_to_protect]
     
@@ -76,19 +75,8 @@ class GreedyStep():
         node_to_protect, node_time = self.get_node_to_protect(candidates, env.firefighter, step_dir)
 
         if node_to_protect is None:
-            print('No node to protect')
             return False
         
-        print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
-        env.move(node_to_protect)
+        # print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
+        env.move(int(node_to_protect))
         return True
-
-
-
-
-
-
-
-            
-
-

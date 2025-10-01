@@ -3,8 +3,8 @@ from greedyff.tree_generator import generate_random_tree
 
 
 def example_with_tree():
-    n_nodes = 15
-    root_degree = 5
+    n_nodes = 100
+    root_degree = 7
     type_root_degree = 'min'
     ff_speed = 1
     dir_name = "output_tree"
