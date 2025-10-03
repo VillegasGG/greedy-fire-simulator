@@ -32,13 +32,7 @@ def load_results(dir="experiments"):
         with open(file, 'r') as f:
             data = json.load(f)
             results_file.append(data)
-    print(f"Loaded {len(results_file)} results files from {dir} folder.")
-    results = []
-    for file in results_file:
-        for result in file:
-            results.append(result)
-    print(f"Loaded {len(results)} results from {dir} folder.")
-    return results
+    return results_file
 
 # dir = "experiments"
 # experiments = load_experiments(dir)

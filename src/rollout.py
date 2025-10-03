@@ -79,7 +79,7 @@ def rollout(d_tree, k=1):
                     exist_candidate = False
                 else:
                     env_rollout.move(int(best_candidate[0]))
-                    env_rollout.log_state()
+                    # env_rollout.log_state()
                     # print(f"Firefighter moved to protect node {best_candidate}")
 
             # Turno de la propagacion del fuego
