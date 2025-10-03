@@ -50,7 +50,7 @@ def construct_edges(sequence, degrees):
     edges.append((remaining_nodes[1], remaining_nodes[0]))
     return edges
 
-def create_tree_from_sequence(sequence, add_positions=True):
+def create_tree_from_sequence(sequence, add_positions=True, positions=None):
     """
     Crea un árbol a partir de una secuencia de Prüfer.
     """
@@ -58,9 +58,6 @@ def create_tree_from_sequence(sequence, add_positions=True):
     degrees = calculate_degrees(sequence, n_nodes)
     
     edges = construct_edges(sequence, degrees)
-
-    # Genera posiciones de ser necesario
-    positions = None
 
     if add_positions:
         positions = generate_positions(n_nodes, edges)

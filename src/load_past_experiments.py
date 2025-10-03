@@ -2,7 +2,7 @@ import json
 import os
 
 # Load experiments from a directory
-def load_experiments(dir):
+def load_experiments(dir="experiments"):
     files = []
     for file in os.listdir(dir):
         if file.startswith("experiments_") and file.endswith(".json"):
@@ -12,10 +12,17 @@ def load_experiments(dir):
         with open(file, 'r') as f:
             data = json.load(f)
             experiment_file.append(data)
-    return experiment_file
+    print(f"Loaded {len(files)} experiment files from {dir} folder.")
+
+    experiments_list = []
+    for file in experiment_file:
+        for experiment in file:
+            experiments_list.append(experiment)
+    print(f"Loaded {len(experiments_list)} experiments from {dir} folder.")
+    return experiments_list
 
 # Load results from a directory
-def load_results(dir):
+def load_results(dir="experiments"):
     files = []
     for file in os.listdir(dir):
         if file.startswith("results_") and file.endswith(".json"):
@@ -25,22 +32,14 @@ def load_results(dir):
         with open(file, 'r') as f:
             data = json.load(f)
             results_file.append(data)
-    return results_file
+    print(f"Loaded {len(results_file)} results files from {dir} folder.")
+    results = []
+    for file in results_file:
+        for result in file:
+            results.append(result)
+    print(f"Loaded {len(results)} results from {dir} folder.")
+    return results
 
-dir = "experiments"
-files = load_experiments(dir)
-print(f"Loaded {len(files)} experiment files from {dir} folder.")
-
-experiments = []
-for file in files:
-    for experiment in file:
-        experiments.append(experiment)
-print(f"Loaded {len(experiments)} experiments from {dir} folder.")
-
-files_results = load_results(dir)
-print(f"Loaded {len(files_results)} results files from {dir} folder.")
-results = []
-for file in files_results:
-    for result in file:
-        results.append(result)
-print(f"Loaded {len(results)} results from {dir} folder.")
+# dir = "experiments"
+# experiments = load_experiments(dir)
+# files_results = load_results(dir)

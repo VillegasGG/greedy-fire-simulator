@@ -34,7 +34,6 @@ class GreedySim:
         # Create the output and data directories if they don't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.output_dir.joinpath("data").mkdir(parents=True, exist_ok=True)
-        print(f"Output directory created at: {self.output_dir}")
 
         # Save the tree structure and sequence to JSON files
         # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")

@@ -1,6 +1,0 @@
-Rollout Report
-====================
-Solution: [27, 0, 47, 12, 5, 12, 32]
-Damage: 11
-Number of Nodes: 50
-Time Taken: 7.8555 seconds
