@@ -7,7 +7,7 @@ from load_past_experiments import load_results
 results = load_results()
 
 # Load rollout results
-with open("rollout_test_results.json", "r") as f:
+with open("rollout_test_results_1.json", "r") as f:
     rollout_results_1 = json.load(f)
 
 with open("rollout_test_results_2.json", "r") as f:

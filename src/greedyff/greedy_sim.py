@@ -8,6 +8,7 @@ class GreedySim:
             self.env = env
             self.d_tree = env.tree
             self.ff_speed = env.firefighter.speed
+            self.ff_position = env.firefighter.position
         else:
             self.env = None
             self.ff_speed = ff_speed
@@ -30,10 +31,6 @@ class GreedySim:
             
             # Generate directed tree from the provided tree
             self.d_tree, _ = tree.convert_to_directed(root)
-            
-        # Create the output and data directories if they don't exist
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.output_dir.joinpath("data").mkdir(parents=True, exist_ok=True)
 
         # Save the tree structure and sequence to JSON files
         # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
@@ -60,18 +57,15 @@ class GreedySim:
 
         return self.env
 
-    def firefighter_action(self, step):
+    def firefighter_action(self):
         """
         Turno del bombero
         """
-        # Create path for step directory
-        step_dir = self.output_dir / "steps_log" / f"step_{step}"
-        step_dir.mkdir(parents=True, exist_ok=True)
 
         exist_candidate = True
 
         while(self.env.firefighter.get_remaining_time() > 0 and exist_candidate):
-            exist_candidate = GreedyStep(self.d_tree).select_action(self.env, step_dir)
+            exist_candidate = GreedyStep(self.d_tree).select_action(self.env)
             
     def execute_step(self, step):
         """
@@ -88,8 +82,12 @@ class GreedySim:
 
         if not self.env.state.burning_nodes:
             self.env.start_fire(self.env.tree.root)
+            if self.env.firefighter.position is None:
+                self.env.firefighter.add_random_initial_position()
+            else: 
+                self.env.firefighter.position = self.ff_position
         else:
-            self.firefighter_action(step)
+            self.firefighter_action()
             self.env.propagate()
     
     def run_simulation(self, output_dir):
@@ -97,13 +95,10 @@ class GreedySim:
         
         while not self.env.is_completely_burned():
             step += 1
-            # if step>0: print(f"{'#' * 50}\nSTATE {step-1}:")
             self.execute_step(step)
 
-        save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
-        save_history(self.env.history, output_dir)
-
-        # print('-' * 50 + f"\nDaño: {len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)}\n" + '-' * 50)
+        # save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
+        # save_history(self.env.history, output_dir)
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

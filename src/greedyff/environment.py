@@ -24,9 +24,6 @@ class Environment:
             self.state.burning_nodes.add(initial_node)
         else:
             raise ValueError("The initial node does not exist in the tree.")
-        
-        # Add a random firefighter position
-        self.firefighter.add_random_initial_position()
 
     def propagate(self):
         new_burning_nodes = set()
@@ -39,6 +36,7 @@ class Environment:
                         new_burning_nodes.add(neighbor)
         
         # Update the state of the nodes
+        print(f"Propagating fire. New burning nodes: {new_burning_nodes}")
         self.state.burned_nodes.update(self.state.burning_nodes)
         self.state.set_burning_nodes(new_burning_nodes)
 

@@ -9,8 +9,11 @@ def k_steps(env, k):
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
     if k==0:
+        print("No more steps to simulate, continuing with greedy policy.")
+        env.log_state()
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
+        env.log_state()
 
     min_damage = float('inf')
     best_candidate = None
@@ -24,24 +27,28 @@ def k_steps(env, k):
         return damage, None
 
     for candidate in candidates:
-        print(f"Evaluating candidate: {candidate}")
+        print("--------------------------------")
+        print(f"Evaluating candidate: {int(candidate[0])}, Time to reach: {candidate[1]}")
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
-        # env_copy.log_state()
+        if env_copy.firefighter.get_remaining_time() == 0:
+            env_copy.propagate()
+            env_copy.firefighter.init_remaining_time()
+        env_copy.log_state()
         damage, _ = k_steps(env_copy, k-1)
-        # print(f"Step {k}: Candidate {candidate} resulted in damage {damage}")
+        print(f"Step {k}: Candidate {candidate} resulted in damage {damage}")
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
-    # print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
+    print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
     return min_damage, best_candidate
 
-def rollout(d_tree, k=1):
+def rollout(d_tree, ff_position, k=1):
     '''
     Perform a rollout simulation on the given tree starting from the root node.
     Args:
         tree: The tree structure representing the environment.
-        root: The root node of the tree where the fire starts.
+        ff_position: The initial position of the firefighter.
         k: The number of steps to rollout at future, after that it will continue with greedy policy.
     '''
     start_time = time.perf_counter()
@@ -51,7 +58,7 @@ def rollout(d_tree, k=1):
     final_damage = None
 
     # Initialize the environment with the directed tree, firefighter speed, and position
-    env = Environment(d_tree, speed=1, ff_position=None, remaining_time=1)
+    env = Environment(d_tree, speed=1, ff_position=ff_position, remaining_time=1)
 
     # Create a GreedySim instance with the environment
     greedy_simulation = GreedySim(env=env, ff_speed=1, output_dir="rollout_output")
@@ -102,14 +109,3 @@ def rollout(d_tree, k=1):
     #     f.write(f"Time Taken: {end_time - start_time:.4f} seconds\n")
 
     return solution, final_damage, end_time - start_time
-
-# n_nodes = 50
-# root_degree = 7
-# type_root_degree = 'min'
-# ff_speed = 1
-# dir_name = "output_tree"
-# tree, _, root = generate_random_tree(n_nodes, root_degree, type_root_degree)
-
-# d_tree, _ = tree.convert_to_directed(root)
-
-# rollout(d_tree, 1)
