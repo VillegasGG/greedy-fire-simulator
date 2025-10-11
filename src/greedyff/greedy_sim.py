@@ -79,6 +79,7 @@ class GreedySim:
         """
         if self.env.firefighter.get_remaining_time() is None or self.env.firefighter.get_remaining_time() <= 0:
             self.env.firefighter.init_remaining_time()
+            # print(f"Step {step}: Firefighter's remaining time initialized to {self.env.firefighter.get_remaining_time()}")
 
         if not self.env.state.burning_nodes:
             self.env.start_fire(self.env.tree.root)
@@ -88,6 +89,7 @@ class GreedySim:
                 self.env.firefighter.position = self.ff_position
         else:
             self.firefighter_action()
+            # print(f"Step {step}: Firefighter's remaining time after action: {self.env.firefighter.get_remaining_time()}")
             self.env.propagate()
     
     def run_simulation(self, output_dir):
@@ -95,6 +97,8 @@ class GreedySim:
         
         while not self.env.is_completely_burned():
             step += 1
+            # print(f"--- Step {step} ---")
+            # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
             self.execute_step(step)
 
         # save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)

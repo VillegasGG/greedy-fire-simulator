@@ -36,7 +36,7 @@ class Environment:
                         new_burning_nodes.add(neighbor)
         
         # Update the state of the nodes
-        print(f"Propagating fire. New burning nodes: {new_burning_nodes}")
+        # print(f"Propagating fire. New burning nodes: {new_burning_nodes}")
         self.state.burned_nodes.update(self.state.burning_nodes)
         self.state.set_burning_nodes(new_burning_nodes)
 
@@ -76,13 +76,13 @@ class Environment:
             self.state.protected_nodes.add(node)
             self.firefighter.move_to_node(node_position, node_time)
             self.firefighter.protecting_node = None
-            self.update_history({
-                "step": self.firefighter.get_remaining_time(),
-                "burned_nodes": [int(node) for node in self.state.burned_nodes],
-                "burning_nodes": [int(node) for node in self.state.burning_nodes],
-                "protected_nodes": [int(node) for node in self.state.protected_nodes],
-                "firefighter_position": [float(pos) for pos in self.firefighter.position]
-            })
+            # self.update_history({
+            #     "step": self.firefighter.get_remaining_time(),
+            #     "burned_nodes": [int(node) for node in self.state.burned_nodes],
+            #     "burning_nodes": [int(node) for node in self.state.burning_nodes],
+            #     "protected_nodes": [int(node) for node in self.state.protected_nodes],
+            #     "firefighter_position": [float(pos) for pos in self.firefighter.position]
+            # })
         else:
             self.firefighter.move_fraction(node_position)
             self.firefighter.protecting_node = node

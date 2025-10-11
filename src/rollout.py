@@ -9,38 +9,33 @@ def k_steps(env, k):
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
     if k==0:
-        print("No more steps to simulate, continuing with greedy policy.")
-        env.log_state()
+        # print("No more steps to simulate, continuing with greedy policy.")
+        # env.log_state()
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
-        env.log_state()
 
     min_damage = float('inf')
     best_candidate = None
     candidates = get_candidates(env.tree, env.state, env.firefighter)
-    print(f"Number of candidates: {len(candidates)}")
 
     if not candidates:
-        # print("No more candidates to protect. Ending rollout.")
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
         return damage, None
 
     for candidate in candidates:
-        print("--------------------------------")
-        print(f"Evaluating candidate: {int(candidate[0])}, Time to reach: {candidate[1]}")
+        # print(f"Evaluating candidate: {int(candidate[0])}, Time to reach: {candidate[1]}")
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
         if env_copy.firefighter.get_remaining_time() == 0:
             env_copy.propagate()
-            env_copy.firefighter.init_remaining_time()
-        env_copy.log_state()
+        # env_copy.log_state()
         damage, _ = k_steps(env_copy, k-1)
-        print(f"Step {k}: Candidate {candidate} resulted in damage {damage}")
+        # print(f"Step {k}: Candidate {candidate} resulted in damage {damage}")
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
-    print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
+    # print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
     return min_damage, best_candidate
 
 def rollout(d_tree, ff_position, k=1):

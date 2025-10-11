@@ -16,9 +16,6 @@ with open("rollout_test_results_2.json", "r") as f:
 results_1 = results[0]
 results_2 = results[1]
 
-print(f"Loaded {len(rollout_results_1)} rollout results.")
-print(f"Loaded {len(rollout_results_2)} rollout results.")
-
 dynamic_programming_results_1 = results_1["dynamic_programming"]
 dynamic_programming_results_2 = results_2["dynamic_programming"]
 
@@ -33,17 +30,6 @@ miqcp_results_2 = results_2["miqcp"]
 
 greedy_results_1 = results_1["greedy"]
 greedy_results_2 = results_2["greedy"]
-
-print(f"Dynamic Programming results 1: {len(dynamic_programming_results_1)}")
-print(f"Dynamic Programming results 2: {len(dynamic_programming_results_2)}")
-print(f"IQCP results 1: {len(iqcp_results_1)}")
-print(f"IQCP results 2: {len(iqcp_results_2)}")
-print(f"ILP results 1: {len(ilp_results_1)}")
-print(f"ILP results 2: {len(ilp_results_2)}")
-print(f"MIQCP results 1: {len(miqcp_results_1)}")
-print(f"MIQCP results 2: {len(miqcp_results_2)}")
-print(f"Greedy results 1: {len(greedy_results_1)}")
-print(f"Greedy results 2: {len(greedy_results_2)}")
 
 # convert to dataframe
 df_rollout_1 = pd.DataFrame(rollout_results_1)

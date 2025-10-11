@@ -41,9 +41,7 @@ class GreedyStep():
             subtree = self.get_candidate_subtree(candidate[0])
             depth = len(subtree)
             candidates_depths[candidate[0]] = depth
-            candidates_time[candidate[0]] = candidate[1]
-            # print(f"Candidate: {candidate[0]}, Depth: {depth}, Time: {candidate[1]}")
-        
+            candidates_time[candidate[0]] = candidate[1]        
         
         if(firefighter.protecting_node):
             return firefighter.protecting_node, candidates_time[firefighter.protecting_node]
@@ -53,7 +51,8 @@ class GreedyStep():
         
         max_depth = max(candidates_depths.values())
         
-        node_to_protect =  [node for node, depth in candidates_depths.items() if depth == max_depth][0]
+        final_candidates =  [node for node, depth in candidates_depths.items() if depth == max_depth]
+        node_to_protect = min(final_candidates, key=lambda n: candidates_time[n])
 
         return node_to_protect, candidates_time[node_to_protect]
     
@@ -73,6 +72,7 @@ class GreedyStep():
         if node_to_protect is None:
             return False
         
-        print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
+        # print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
         env.move(int(node_to_protect))
+        # print(f"Firefighter remaining time: {env.firefighter.get_remaining_time()}")
         return True

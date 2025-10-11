@@ -16,7 +16,6 @@ def test_tree_rollout(data):
     prufer_sequence = data["sequence"]
     root = data["root"]
     initial_ff_position = data["initial_firefighter_position"]
-    print(f"Root: {root}, Initial FF position: {initial_ff_position}")
     sequence = np.array(prufer_sequence)
     tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
     d_tree, _ = tree.convert_to_directed(root)
@@ -39,23 +38,20 @@ def test_tree_rollout(data):
 
 
 experiments = load_experiments()
-test = experiments[57]
-# print(test)
+# test = experiments[98]
+# result = test_tree_rollout(test)
+# print(result)
 
-result = test_tree_rollout(test)
+results = []
 
-print(result)
+for exp in experiments:
+    print(f"Running test for experiment ID: {exp['id']}")
+    result = test_tree_rollout(exp)
+    results.append(result)
 
-# results = []
-
-# for exp in experiments:
-#     print(f"Running test for experiment ID: {exp['id']}")
-#     result = test_tree_rollout(exp)
-#     results.append(result)
-
-# # Save results to a json file
-# with open("rollout_test_results.json", "w") as f:
-#     json.dump(results, f, indent=4)
+# Save results to a json file
+with open("rollout_test_results.json", "w") as f:
+    json.dump(results, f, indent=4)
 
 # Testing greedy
 # n_nodes = test["n_nodes"]
