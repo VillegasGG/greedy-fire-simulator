@@ -73,8 +73,6 @@ class Environment:
             self.firefighter.move_fraction(node_position)
             self.firefighter.protecting_node = node
 
-        self.log_state()
-
     def log_state(self):
         print(f"Burned Nodes: {self.state.burned_nodes}")
         print(f"Burning Nodes: {self.state.burning_nodes}")

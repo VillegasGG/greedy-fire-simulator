@@ -14,7 +14,6 @@ def k_steps(env, k):
     
     min_damage = float('inf')
     best_candidate = None
-    env.log_state()
 
     if env.firefighter.get_remaining_time() is None or env.firefighter.get_remaining_time() <= 0:
         env.firefighter.init_remaining_time()
@@ -36,7 +35,6 @@ def k_steps(env, k):
         env_copy.move(int(candidate[0]))
         if env_copy.firefighter.get_remaining_time() == 0:
             env_copy.propagate()
-        env_copy.log_state()
         damage, _ = k_steps(env_copy, k-1)
         if damage < min_damage:
             min_damage = damage
