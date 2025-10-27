@@ -1,9 +1,7 @@
-import json
 import numpy as np
 from greedyff.tree_generator import create_tree_from_sequence
 from load_past_experiments import load_experiments, load_results
 from rollout import rollout
-
 from greedyff.greedy_sim import GreedySim
 from greedyff.environment import Environment
 
@@ -20,7 +18,7 @@ def test_tree_rollout(data):
     tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
     d_tree, _ = tree.convert_to_directed(root)
 
-    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=1)
+    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=2)
 
     # Return json format
     result = {
@@ -38,20 +36,20 @@ def test_tree_rollout(data):
 
 
 experiments = load_experiments()
-# test = experiments[98]
-# result = test_tree_rollout(test)
-# print(result)
+test = experiments[0]
+result = test_tree_rollout(test)
+print(result)
 
-results = []
+# results = []
 
-for exp in experiments:
-    print(f"Running test for experiment ID: {exp['id']}")
-    result = test_tree_rollout(exp)
-    results.append(result)
+# for exp in experiments:
+#     print(f"Running test for experiment ID: {exp['id']}")
+#     result = test_tree_rollout(exp)
+#     results.append(result)
 
-# Save results to a json file
-with open("rollout_test_results.json", "w") as f:
-    json.dump(results, f, indent=4)
+# # Save results to a json file
+# with open("rollout_test_results.json", "w") as f:
+#     json.dump(results, f, indent=4)
 
 # Testing greedy
 # n_nodes = test["n_nodes"]

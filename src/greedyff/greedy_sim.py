@@ -1,5 +1,4 @@
 from pathlib import Path
-from greedyff.helpers import save_results, save_history
 from greedyff.greedy_step import GreedyStep
 
 class GreedySim:
@@ -97,12 +96,9 @@ class GreedySim:
         
         while not self.env.is_completely_burned():
             step += 1
-            # print(f"--- Step {step} ---")
-            # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
+            print(f"--- Step {step} ---")
+            print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
             self.execute_step(step)
-
-        # save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
-        # save_history(self.env.history, output_dir)
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

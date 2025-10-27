@@ -6,7 +6,6 @@ class Environment:
     def __init__(self, tree, speed, ff_position, remaining_time, fire_state=None):
         self.tree = tree
         self.firefighter = Firefighter(tree, speed, ff_position, remaining_time)
-        self.history = []
 
         if fire_state is None:
             self.state = FireState(tree)
@@ -54,12 +53,6 @@ class Environment:
                     return False
         return True
 
-    def update_history(self, dict_info):
-        """
-        Actualiza el historial de la simulacion
-        """
-        self.history.append(dict_info)
-
     def move(self, node):
         """
         Mueve al bombero al nodo indicado, ya sea completamente o parcialmente
@@ -73,19 +66,16 @@ class Environment:
         node_time = self.firefighter.calc_time_to_node(node)
 
         if ff_remaining_time >= node_time:
+            print(f"Firefighter moving to node {node} (entirely))")
             self.state.protected_nodes.add(node)
             self.firefighter.move_to_node(node_position, node_time)
             self.firefighter.protecting_node = None
-            # self.update_history({
-            #     "step": self.firefighter.get_remaining_time(),
-            #     "burned_nodes": [int(node) for node in self.state.burned_nodes],
-            #     "burning_nodes": [int(node) for node in self.state.burning_nodes],
-            #     "protected_nodes": [int(node) for node in self.state.protected_nodes],
-            #     "firefighter_position": [float(pos) for pos in self.firefighter.position]
-            # })
         else:
+            print(f"Firefighter moving towards node {node} (partially)")
             self.firefighter.move_fraction(node_position)
             self.firefighter.protecting_node = node
+
+        self.log_state()
 
     def log_state(self):
         print(f"Burned Nodes: {self.state.burned_nodes}")
