@@ -66,12 +66,10 @@ class Environment:
         node_time = self.firefighter.calc_time_to_node(node)
 
         if ff_remaining_time >= node_time:
-            print(f"Firefighter moving to node {node} (entirely))")
             self.state.protected_nodes.add(node)
             self.firefighter.move_to_node(node_position, node_time)
             self.firefighter.protecting_node = None
         else:
-            print(f"Firefighter moving towards node {node} (partially)")
             self.firefighter.move_fraction(node_position)
             self.firefighter.protecting_node = node
 

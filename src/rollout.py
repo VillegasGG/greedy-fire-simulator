@@ -1,6 +1,5 @@
 import time
 from greedyff.greedy_sim import GreedySim
-from greedyff.tree_generator import generate_random_tree
 from greedyff.get_candidates_utils import get_candidates
 from greedyff.environment import Environment
 
@@ -10,7 +9,6 @@ def k_steps(env, k):
     '''
     if k==0:
         print(f"STEP {k} - GREEDY SIMULATION FINAL...")
-        # env.log_state()
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
         return damage, None
@@ -20,30 +18,23 @@ def k_steps(env, k):
     min_damage = float('inf')
     best_candidate = None
     env.log_state()
+
     if env.firefighter.get_remaining_time() is None or env.firefighter.get_remaining_time() <= 0:
         env.firefighter.init_remaining_time()
 
-    candidates = get_candidates(env.tree, env.state, env.firefighter)
-    print(f"Number of candidates at step {k}: {len(candidates)}")
-    print(f"Candidates: {[(int(candidate[0]), candidate[1]) for candidate in candidates]}")
+    if env.firefighter.protecting_node is not None:
+        node_to_protect = env.firefighter.protecting_node
+        node_time_to_reach = env.firefighter.get_distance_to_node(node_to_protect) / env.firefighter.speed
+        candidates = [(node_to_protect, node_time_to_reach)]
+    else:
+        candidates = get_candidates(env.tree, env.state, env.firefighter)
 
     if not candidates:
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
         return damage, None
-    
-    if env.firefighter.protecting_node is not None:
-        node_to_protect = env.firefighter.protecting_node
-        for c in candidates:
-            if int(c[0]) == int(node_to_protect):
-                node_time_to_reach = c[1]
-                break
-        candidates = [(node_to_protect, node_time_to_reach)]
-
-    print(f"Evaluating {len(candidates)}")
 
     for candidate in candidates:
-        print(f"Evaluating candidate: {int(candidate[0])}, Time to reach: {candidate[1]}")
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
         if env_copy.firefighter.get_remaining_time() == 0:
