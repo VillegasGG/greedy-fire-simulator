@@ -64,7 +64,6 @@ def get_final_candidates(candidates, fire_time, time_ff_reach, ff):
         time_ff_reach_candidate = time_ff_reach[candidate]
         time_to_burn_candidate = fire_time[candidate]
         remaining_time = ff.get_remaining_time()
-        print(f"Candidate: {int(candidate)}, Time FF reach: {time_ff_reach_candidate}, Time to burn: {time_to_burn_candidate}, Remaining time: {remaining_time}")
         if time_ff_reach_candidate > time_to_burn_candidate:
             continue
         elif remaining_time < 1:
@@ -82,7 +81,6 @@ def get_final_candidates(candidates, fire_time, time_ff_reach, ff):
 
 def get_candidates(tree, state, ff):
     first_candidates = get_not_protected_nodes(tree, state)
-    print(f"First candidates: {[int(candidate) for candidate in first_candidates]}")
 
     ff_distances = ff.get_distances_to_nodes(first_candidates)
     fire_time = steps_to_reach_all(tree, state)
@@ -90,9 +88,6 @@ def get_candidates(tree, state, ff):
     time_ff_reach = {} # Time taken to reach each candidate
     for candidate in first_candidates:
         time_ff_reach[candidate] = ff_distances[candidate] / ff.speed
-
-    print(f"Node and times to reach by firefighter: {[(int(candidate), time_ff_reach[candidate]) for candidate in first_candidates]}")
-    print(f"Fire times: {[(int(candidate), fire_time[candidate]) for candidate in first_candidates]}")
     
     final_candidates = get_final_candidates(first_candidates, fire_time, time_ff_reach, ff)
 

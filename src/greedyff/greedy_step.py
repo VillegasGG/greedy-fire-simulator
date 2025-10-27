@@ -72,6 +72,5 @@ class GreedyStep():
         if node_to_protect is None:
             return False
         
-        print('Node to protect: ' + str(int(node_to_protect)) + ' Time: ' + str(node_time))
         env.move(int(node_to_protect))
         return True

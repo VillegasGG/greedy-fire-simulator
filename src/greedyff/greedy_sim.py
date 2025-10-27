@@ -96,8 +96,6 @@ class GreedySim:
         
         while not self.env.is_completely_burned():
             step += 1
-            print(f"--- Step {step} ---")
-            print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
             self.execute_step()
 
         # Return damage

@@ -8,13 +8,10 @@ def k_steps(env, k):
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
     if k==0:
-        print(f"STEP {k} - GREEDY SIMULATION FINAL...")
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
         return damage, None
     
-
-    print(f"STEP {k}...")
     min_damage = float('inf')
     best_candidate = None
     env.log_state()
@@ -44,7 +41,6 @@ def k_steps(env, k):
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
-        print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
     return min_damage, best_candidate
 
 def rollout(d_tree, ff_position, k=2):
@@ -71,10 +67,6 @@ def rollout(d_tree, ff_position, k=2):
     env_rollout = greedy_simulation.step()
     state = env_rollout.state
 
-    print(f"Burned nodes after greedy step: {state.burned_nodes}")
-    print(f"Burning nodes after greedy step: {state.burning_nodes}")
-    print(f"Protected nodes after greedy step: {state.protected_nodes}")
-
     while env_rollout.is_completely_burned() == False:
         if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() <= 0:
             env_rollout.firefighter.init_remaining_time()
@@ -85,13 +77,10 @@ def rollout(d_tree, ff_position, k=2):
                 damage, best_candidate = k_steps(env_rollout, k)
                 if best_candidate is not None and int(best_candidate[0]) not in [int(node[0]) for node in solution]:
                     solution.append(best_candidate)
-                print(f"Best candidate from rollout: {best_candidate}")
                 if best_candidate is None:
                     exist_candidate = False
                 else:
                     env_rollout.move(int(best_candidate[0]))
-                    # env_rollout.log_state()
-                    print(f"ENV: Firefighter moved to protect node {best_candidate}")
 
             # Turno de la propagacion del fuego
             env_rollout.propagate()
