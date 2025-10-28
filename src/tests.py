@@ -4,6 +4,7 @@ from load_past_experiments import load_experiments, load_results
 from rollout import rollout
 from greedyff.greedy_sim import GreedySim
 from greedyff.environment import Environment
+import json
 
 
 # generate a tree from sequence prufer, nodes positions and root
@@ -36,20 +37,21 @@ def test_tree_rollout(data):
 
 
 experiments = load_experiments()
-test = experiments[0]
-result = test_tree_rollout(test)
-print(result)
 
-# results = []
+# test = experiments[0]
+# result = test_tree_rollout(test)
+# print(result)
 
-# for exp in experiments:
-#     print(f"Running test for experiment ID: {exp['id']}")
-#     result = test_tree_rollout(exp)
-#     results.append(result)
+results = []
 
-# # Save results to a json file
-# with open("rollout_test_results.json", "w") as f:
-#     json.dump(results, f, indent=4)
+for exp in experiments:
+    print(f"Running test for experiment ID: {exp['id']}")
+    result = test_tree_rollout(exp)
+    results.append(result)
+
+# Save results to a json file
+with open("rollout_test_results.json", "w") as f:
+    json.dump(results, f, indent=4)
 
 # Testing greedy
 # n_nodes = test["n_nodes"]

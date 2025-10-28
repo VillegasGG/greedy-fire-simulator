@@ -63,7 +63,6 @@ def rollout(d_tree, ff_position, k=2):
 
     # First step: initialize fire
     env_rollout = greedy_simulation.step()
-    state = env_rollout.state
 
     while env_rollout.is_completely_burned() == False:
         if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() <= 0:
