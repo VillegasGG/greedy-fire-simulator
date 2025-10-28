@@ -41,7 +41,7 @@ def k_steps(env, k):
             best_candidate = candidate
     return min_damage, best_candidate
 
-def rollout(d_tree, ff_position, k=2):
+def rollout(d_tree, ff_position, k):
     '''
     Perform a rollout simulation on the given tree starting from the root node.
     Args:

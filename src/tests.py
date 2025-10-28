@@ -19,7 +19,7 @@ def test_tree_rollout(data):
     tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
     d_tree, _ = tree.convert_to_directed(root)
 
-    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=2)
+    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=1)
 
     # Return json format
     result = {
@@ -50,7 +50,8 @@ for exp in experiments:
     results.append(result)
 
 # Save results to a json file
-with open("rollout_test_results.json", "w") as f:
+k=1
+with open(f"rollout_test_results_{k}.json", "w") as f:
     json.dump(results, f, indent=4)
 
 # Testing greedy
