@@ -7,10 +7,10 @@ from load_past_experiments import load_results
 results = load_results()
 
 # Load rollout results
-with open("rollout_test_results_1.json", "r") as f:
+with open("rollout_test_results_1_1.json", "r") as f:
     rollout_results_1 = json.load(f)
 
-with open("rollout_test_results_2.json", "r") as f:
+with open("rollout_test_results_1_2.json", "r") as f:
     rollout_results_2 = json.load(f)
 
 results_1 = results[0]
@@ -85,7 +85,7 @@ df_merged_1['diff_greedy_rollout'] = df_merged_1['optimal_rollout'] - df_merged_
 df_merged_2['diff_greedy_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_greedy']
 
 # Save merged dataframes to csv
-df_merged_1.to_csv("compare_results_1.csv", index=False)
-df_merged_2.to_csv("compare_results_2.csv", index=False)
+df_merged_1.to_csv("compare_results_1_1.csv", index=False)
+df_merged_2.to_csv("compare_results_1_2.csv", index=False)
 
 print("Saved compare_results_1.csv and compare_results_2.csv")

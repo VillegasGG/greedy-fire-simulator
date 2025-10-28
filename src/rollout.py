@@ -1,6 +1,5 @@
 import time
 from greedyff.greedy_sim import GreedySim
-from greedyff.tree_generator import generate_random_tree
 from greedyff.get_candidates_utils import get_candidates
 from greedyff.environment import Environment
 
@@ -9,14 +8,22 @@ def k_steps(env, k):
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
     if k==0:
-        # print("No more steps to simulate, continuing with greedy policy.")
-        # env.log_state()
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
         damage = greedy_simulation_final.run()
-
+        return damage, None
+    
     min_damage = float('inf')
     best_candidate = None
-    candidates = get_candidates(env.tree, env.state, env.firefighter)
+
+    if env.firefighter.get_remaining_time() is None or env.firefighter.get_remaining_time() <= 0:
+        env.firefighter.init_remaining_time()
+
+    if env.firefighter.protecting_node is not None:
+        node_to_protect = env.firefighter.protecting_node
+        node_time_to_reach = env.firefighter.get_distance_to_node(node_to_protect) / env.firefighter.speed
+        candidates = [(node_to_protect, node_time_to_reach)]
+    else:
+        candidates = get_candidates(env.tree, env.state, env.firefighter)
 
     if not candidates:
         greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
@@ -24,21 +31,17 @@ def k_steps(env, k):
         return damage, None
 
     for candidate in candidates:
-        # print(f"Evaluating candidate: {int(candidate[0])}, Time to reach: {candidate[1]}")
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
         if env_copy.firefighter.get_remaining_time() == 0:
             env_copy.propagate()
-        # env_copy.log_state()
         damage, _ = k_steps(env_copy, k-1)
-        # print(f"Step {k}: Candidate {candidate} resulted in damage {damage}")
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
-    # print(f"Best candidate at step {k}: {best_candidate} with damage {min_damage}")
     return min_damage, best_candidate
 
-def rollout(d_tree, ff_position, k=1):
+def rollout(d_tree, ff_position, k):
     '''
     Perform a rollout simulation on the given tree starting from the root node.
     Args:
@@ -60,11 +63,6 @@ def rollout(d_tree, ff_position, k=1):
 
     # First step: initialize fire
     env_rollout = greedy_simulation.step()
-    state = env_rollout.state
-
-    # print(f"Burned nodes after greedy step: {state.burned_nodes}")
-    # print(f"Burning nodes after greedy step: {state.burning_nodes}")
-    # print(f"Protected nodes after greedy step: {state.protected_nodes}")
 
     while env_rollout.is_completely_burned() == False:
         if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() <= 0:
@@ -76,13 +74,10 @@ def rollout(d_tree, ff_position, k=1):
                 damage, best_candidate = k_steps(env_rollout, k)
                 if best_candidate is not None and int(best_candidate[0]) not in [int(node[0]) for node in solution]:
                     solution.append(best_candidate)
-                # print(f"Best candidate from rollout: {best_candidate}")
                 if best_candidate is None:
                     exist_candidate = False
                 else:
                     env_rollout.move(int(best_candidate[0]))
-                    # env_rollout.log_state()
-                    # print(f"Firefighter moved to protect node {best_candidate}")
 
             # Turno de la propagacion del fuego
             env_rollout.propagate()
@@ -90,7 +85,6 @@ def rollout(d_tree, ff_position, k=1):
     final_damage = len(env_rollout.state.burned_nodes) + len(env_rollout.state.burning_nodes)
 
     end_time = time.perf_counter()
-    # print(f"Rollout completed in {end_time - start_time:.4f} seconds")
 
     # Save report with the solution, damage, num nodes and time taken
     solution = [int(node[0]) for node in solution if node is not None]

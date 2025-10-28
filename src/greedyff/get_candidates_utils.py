@@ -70,12 +70,12 @@ def get_final_candidates(candidates, fire_time, time_ff_reach, ff):
             next_step_burn = time_to_burn_candidate - 1
             next_step_ff = time_ff_reach_candidate - remaining_time
             if next_step_ff < next_step_burn:
-                final_candidates.add((candidate, time_ff_reach[candidate]))
+                final_candidates.add((candidate, time_ff_reach_candidate))
             else:
                 continue
         else:
-            if time_ff_reach[candidate] < time_to_burn_candidate:
-                final_candidates.add((candidate, time_ff_reach[candidate]))
+            if time_ff_reach_candidate < time_to_burn_candidate:
+                final_candidates.add((candidate, time_ff_reach_candidate))
 
     return final_candidates
 

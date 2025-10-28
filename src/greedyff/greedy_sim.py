@@ -1,5 +1,4 @@
 from pathlib import Path
-from greedyff.helpers import save_results, save_history
 from greedyff.greedy_step import GreedyStep
 
 class GreedySim:
@@ -36,7 +35,7 @@ class GreedySim:
         # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
         # self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
 
-        damage = self.run_simulation(self.output_dir)
+        damage = self.run_simulation()
 
         return damage
 
@@ -53,7 +52,7 @@ class GreedySim:
             self.d_tree = env.tree
             self.ff_speed = env.firefighter.speed
 
-        self.execute_step(0)
+        self.execute_step()
 
         return self.env
 
@@ -67,7 +66,7 @@ class GreedySim:
         while(self.env.firefighter.get_remaining_time() > 0 and exist_candidate):
             exist_candidate = GreedyStep(self.d_tree).select_action(self.env)
             
-    def execute_step(self, step):
+    def execute_step(self):
         """
         Ejecuta un paso de la simulacion:
         A) Si no hay nodos quemados:
@@ -92,17 +91,12 @@ class GreedySim:
             # print(f"Step {step}: Firefighter's remaining time after action: {self.env.firefighter.get_remaining_time()}")
             self.env.propagate()
     
-    def run_simulation(self, output_dir):
+    def run_simulation(self):
         step = -1
         
         while not self.env.is_completely_burned():
             step += 1
-            # print(f"--- Step {step} ---")
-            # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
-            self.execute_step(step)
-
-        # save_results(self.env.state.burned_nodes, self.env.state.burning_nodes, self.env.state.protected_nodes, "result.json", output_dir)
-        # save_history(self.env.history, output_dir)
+            self.execute_step()
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

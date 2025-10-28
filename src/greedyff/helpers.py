@@ -13,12 +13,6 @@ def save_results(burned_nodes, burning_nodes, protected_nodes, filename, output_
     with open(file_route, 'w', encoding='utf-8') as file:
         json.dump(results, file, indent=2)
 
-def save_history(history, output_dir):
-    output_dir.mkdir(parents=True, exist_ok=True)
-    file_route = output_dir / "history.json"
-    with open(file_route, 'w', encoding='utf-8') as file:
-        json.dump(history, file, indent=2)
-
 def save_step_candidates(candidates, depths,  node_selected, time, remaining_time, step_dir):
     file_route = step_dir / f"candidates_{remaining_time}.json"
     

@@ -1,11 +1,10 @@
-import json
 import numpy as np
 from greedyff.tree_generator import create_tree_from_sequence
 from load_past_experiments import load_experiments, load_results
 from rollout import rollout
-
 from greedyff.greedy_sim import GreedySim
 from greedyff.environment import Environment
+import json
 
 
 # generate a tree from sequence prufer, nodes positions and root
@@ -38,7 +37,8 @@ def test_tree_rollout(data):
 
 
 experiments = load_experiments()
-# test = experiments[98]
+
+# test = experiments[0]
 # result = test_tree_rollout(test)
 # print(result)
 
@@ -50,7 +50,8 @@ for exp in experiments:
     results.append(result)
 
 # Save results to a json file
-with open("rollout_test_results.json", "w") as f:
+k=1
+with open(f"rollout_test_results_{k}.json", "w") as f:
     json.dump(results, f, indent=4)
 
 # Testing greedy
