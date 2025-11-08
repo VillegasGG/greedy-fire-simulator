@@ -9,7 +9,7 @@ import json
 
 # generate a tree from sequence prufer, nodes positions and root
 
-def test_tree_rollout(data):
+def test_tree_rollout(data, k):
     n_nodes = data["n_nodes"]
     positions = data["nodes_positions"]
     prufer_sequence = data["sequence"]
@@ -19,7 +19,7 @@ def test_tree_rollout(data):
     tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
     d_tree, _ = tree.convert_to_directed(root)
 
-    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=1)
+    solution, final_damage, time_taken = rollout(d_tree, ff_position=initial_ff_position, k=k)
 
     # Return json format
     result = {
@@ -35,6 +35,8 @@ def test_tree_rollout(data):
     return result
 
 if __name__ == "__main__":
+
+    k=2
     experiments = load_experiments()
 
     # test = experiments[0]
@@ -45,11 +47,10 @@ if __name__ == "__main__":
 
     for exp in experiments:
         print(f"Running test for experiment ID: {exp['id']}")
-        result = test_tree_rollout(exp)
+        result = test_tree_rollout(exp, k)
         results.append(result)
 
     # Save results to a json file
-    k=1
     with open(f"rollout_test_results_{k}.json", "w") as f:
         json.dump(results, f, indent=4)
 
