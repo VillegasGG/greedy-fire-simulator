@@ -34,44 +34,43 @@ def test_tree_rollout(data):
 
     return result
 
+if __name__ == "__main__":
+    experiments = load_experiments()
 
+    # test = experiments[0]
+    # result = test_tree_rollout(test)
+    # print(result)
 
-experiments = load_experiments()
+    results = []
 
-# test = experiments[0]
-# result = test_tree_rollout(test)
-# print(result)
+    for exp in experiments:
+        print(f"Running test for experiment ID: {exp['id']}")
+        result = test_tree_rollout(exp)
+        results.append(result)
 
-results = []
+    # Save results to a json file
+    k=1
+    with open(f"rollout_test_results_{k}.json", "w") as f:
+        json.dump(results, f, indent=4)
 
-for exp in experiments:
-    print(f"Running test for experiment ID: {exp['id']}")
-    result = test_tree_rollout(exp)
-    results.append(result)
+    # Testing greedy
+    # n_nodes = test["n_nodes"]
+    # positions = test["nodes_positions"]
+    # prufer_sequence = test["sequence"]
+    # root = test["root"]
+    # initial_ff_position = test["initial_firefighter_position"] 
 
-# Save results to a json file
-k=1
-with open(f"rollout_test_results_{k}.json", "w") as f:
-    json.dump(results, f, indent=4)
+    # sequence = np.array(prufer_sequence)
+    # tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
+    # d_tree, _ = tree.convert_to_directed(root)
 
-# Testing greedy
-# n_nodes = test["n_nodes"]
-# positions = test["nodes_positions"]
-# prufer_sequence = test["sequence"]
-# root = test["root"]
-# initial_ff_position = test["initial_firefighter_position"] 
+    # env = Environment(tree=d_tree, speed=1, ff_position=initial_ff_position, remaining_time=1)
+    # g_sim = GreedySim(env=env, ff_speed=1)
+    # damage = g_sim.run()
 
-# sequence = np.array(prufer_sequence)
-# tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
-# d_tree, _ = tree.convert_to_directed(root)
+    # print(f"Greedy damage: {damage}")
 
-# env = Environment(tree=d_tree, speed=1, ff_position=initial_ff_position, remaining_time=1)
-# g_sim = GreedySim(env=env, ff_speed=1)
-# damage = g_sim.run()
-
-# print(f"Greedy damage: {damage}")
-
-# positions = test["nodes_positions"]
-# print("Node positions:")
-# for pos in positions:
-#     print(pos)
+    # positions = test["nodes_positions"]
+    # print("Node positions:")
+    # for pos in positions:
+    #     print(pos)
