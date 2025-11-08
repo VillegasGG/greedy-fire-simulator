@@ -36,7 +36,7 @@ def test_tree_rollout(data, k):
 
 if __name__ == "__main__":
 
-    k=2
+    k=3
     experiments = load_experiments()
 
     # test = experiments[0]
