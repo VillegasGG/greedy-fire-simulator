@@ -7,15 +7,17 @@ def k_steps(env, k):
     '''
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
-    if k==0:
-        greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
-        damage = greedy_simulation_final.run()
-        return damage, None
-    
+
     min_damage = float('inf')
     best_candidate = None
+    t = env.firefighter.get_remaining_time()
 
-    if env.firefighter.get_remaining_time() is None or env.firefighter.get_remaining_time() <= 0:
+    if k==0:
+        greedy_simulation_final = GreedySim(env=env, ff_speed=1)
+        damage = greedy_simulation_final.run()
+        return damage, None  
+
+    if t is None or t <= 0:
         env.firefighter.init_remaining_time()
 
     if env.firefighter.protecting_node is not None:
@@ -26,7 +28,7 @@ def k_steps(env, k):
         candidates = get_candidates(env.tree, env.state, env.firefighter)
 
     if not candidates:
-        greedy_simulation_final = GreedySim(env=env, ff_speed=1, output_dir="final_greedy_output")
+        greedy_simulation_final = GreedySim(env=env, ff_speed=1)
         damage = greedy_simulation_final.run()
         return damage, None
 
@@ -52,14 +54,13 @@ def rollout(d_tree, ff_position, k):
     start_time = time.perf_counter()
 
     solution = []
-
     final_damage = None
 
     # Initialize the environment with the directed tree, firefighter speed, and position
     env = Environment(d_tree, speed=1, ff_position=ff_position, remaining_time=1)
 
     # Create a GreedySim instance with the environment
-    greedy_simulation = GreedySim(env=env, ff_speed=1, output_dir="rollout_output")
+    greedy_simulation = GreedySim(env=env, ff_speed=1)
 
     # First step: initialize fire
     env_rollout = greedy_simulation.step()
@@ -71,7 +72,7 @@ def rollout(d_tree, ff_position, k):
             # Turno del bombero
             exist_candidate = True
             while env_rollout.firefighter.get_remaining_time() > 0 and exist_candidate:
-                damage, best_candidate = k_steps(env_rollout, k)
+                _, best_candidate = k_steps(env_rollout, k)
                 if best_candidate is not None and int(best_candidate[0]) not in [int(node[0]) for node in solution]:
                     solution.append(best_candidate)
                 if best_candidate is None:

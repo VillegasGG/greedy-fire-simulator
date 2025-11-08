@@ -2,7 +2,7 @@ from pathlib import Path
 from greedyff.greedy_step import GreedyStep
 
 class GreedySim:
-    def __init__(self, env = None, ff_speed:float = 1.0, output_dir = "output"):	
+    def __init__(self, env = None, ff_speed:float = 1.0):	
         if env is not None:
             self.env = env
             self.d_tree = env.tree
@@ -10,10 +10,7 @@ class GreedySim:
             self.ff_position = env.firefighter.position
         else:
             self.env = None
-            self.ff_speed = ff_speed
-        
-        self.output_dir = Path(output_dir)
-                    
+            self.ff_speed = ff_speed                    
 
     def run(self, tree=None, root=None):
         """
