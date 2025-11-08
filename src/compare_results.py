@@ -3,68 +3,72 @@ import numpy as np
 import pandas as pd
 from load_past_experiments import load_results
 
-# Load results from rollout_test_results.json
-results = load_results()
+k=2
 
-# Load rollout results
-with open("rollout_test_results_1_1.json", "r") as f:
-    rollout_results_1 = json.load(f)
+exact_results_nodes = "results_moving_nodes.json"
+exact_results_roots = "results_moving_roots.json"
 
-with open("rollout_test_results_1_2.json", "r") as f:
-    rollout_results_2 = json.load(f)
+rollout_results_nodes = f"rollout_test_results_{k}_nodes.json"
+rollout_results_roots = f"rollout_test_results_{k}_roots.json"
 
-results_1 = results[0]
-results_2 = results[1]
+with open(rollout_results_nodes, "r") as f:
+    rollout_results_nodes = json.load(f)
 
-dynamic_programming_results_1 = results_1["dynamic_programming"]
-dynamic_programming_results_2 = results_2["dynamic_programming"]
+with open(rollout_results_roots, "r") as f:
+    rollout_results_roots = json.load(f)
 
-iqcp_results_1 = results_1["iqcp"]
-iqcp_results_2 = results_2["iqcp"]
+result_nodes = load_results(exact_results_nodes)
+result_roots = load_results(exact_results_roots)
 
-ilp_results_1 = results_1["ilp"]
-ilp_results_2 = results_2["ilp"]
+dynamic_programming_results_1 = result_nodes["dynamic_programming"]
+dynamic_programming_results_2 = result_roots["dynamic_programming"]
 
-miqcp_results_1 = results_1["miqcp"]
-miqcp_results_2 = results_2["miqcp"]
+iqcp_results_nodes = result_nodes["iqcp"]
+iqcp_results_roots = result_roots["iqcp"]
 
-greedy_results_1 = results_1["greedy"]
-greedy_results_2 = results_2["greedy"]
+ilp_results_nodes = result_nodes["ilp"]
+ilp_results_roots = result_roots["ilp"]
+
+miqcp_results_nodes = result_nodes["miqcp"]
+miqcp_results_roots = result_roots["miqcp"]
+
+greedy_results_nodes = result_nodes["greedy"]
+greedy_results_roots = result_roots["greedy"]
 
 # convert to dataframe
-df_rollout_1 = pd.DataFrame(rollout_results_1)
-df_rollout_2 = pd.DataFrame(rollout_results_2)
-df_dynamic_programming_1 = pd.DataFrame(dynamic_programming_results_1)
-df_dynamic_programming_2 = pd.DataFrame(dynamic_programming_results_2)
-df_iqcp_1 = pd.DataFrame(iqcp_results_1)
-df_iqcp_2 = pd.DataFrame(iqcp_results_2)
-df_ilp_1 = pd.DataFrame(ilp_results_1)
-df_ilp_2 = pd.DataFrame(ilp_results_2)
-df_miqcp_1 = pd.DataFrame(miqcp_results_1)
-df_miqcp_2 = pd.DataFrame(miqcp_results_2)
-df_greedy_1 = pd.DataFrame(greedy_results_1)
-df_greedy_2 = pd.DataFrame(greedy_results_2)
+df_rollout_nodes = pd.DataFrame(rollout_results_nodes)
+df_rollout_roots = pd.DataFrame(rollout_results_roots)
+df_dynamic_programming_nodes = pd.DataFrame(dynamic_programming_results_1)
+df_dynamic_programming_roots = pd.DataFrame(dynamic_programming_results_2)
+df_iqcp_nodes = pd.DataFrame(iqcp_results_nodes)
+df_iqcp_roots = pd.DataFrame(iqcp_results_roots)
+df_ilp_nodes = pd.DataFrame(ilp_results_nodes)
+df_ilp_roots = pd.DataFrame(ilp_results_roots)
+df_miqcp_nodes = pd.DataFrame(miqcp_results_nodes)
+df_miqcp_roots = pd.DataFrame(miqcp_results_roots)
+df_greedy_nodes = pd.DataFrame(greedy_results_nodes)
+df_greedy_roots = pd.DataFrame(greedy_results_roots)
 
-df_rollout_1 = df_rollout_1.drop("sequence", axis=1)
-df_rollout_2 = df_rollout_2.drop("sequence", axis=1)
+df_rollout_nodes = df_rollout_nodes.drop("sequence", axis=1)
+df_rollout_roots = df_rollout_roots.drop("sequence", axis=1)
 
-df_rollout_1 = df_rollout_1.drop("root", axis=1)
-df_rollout_2 = df_rollout_2.drop("root", axis=1)
+df_rollout_nodes = df_rollout_nodes.drop("root", axis=1)
+df_rollout_roots = df_rollout_roots.drop("root", axis=1)
 
-df_rollout_1 = df_rollout_1.rename(columns={"id": "experiment"})
-df_rollout_2 = df_rollout_2.rename(columns={"id": "experiment"})
+df_rollout_nodes = df_rollout_nodes.rename(columns={"id": "experiment"})
+df_rollout_roots = df_rollout_roots.rename(columns={"id": "experiment"})
 
-df_merged_1 = df_dynamic_programming_1.merge(df_iqcp_1, on="experiment", suffixes=('_dp', '_iqcp'), how='outer')
-df_merged_1 = df_merged_1.merge(df_ilp_1, on="experiment", suffixes=('', '_ilp'), how='outer')
-df_merged_1 = df_merged_1.merge(df_miqcp_1, on="experiment", suffixes=('', '_miqcp'), how='outer')
-df_merged_1 = df_merged_1.merge(df_greedy_1, on="experiment", suffixes=('', '_greedy'), how='outer')
-df_merged_1 = df_merged_1.merge(df_rollout_1, on="experiment", suffixes=('', '_rollout'), how='outer')  
+df_merged_1 = df_dynamic_programming_nodes.merge(df_iqcp_nodes, on="experiment", suffixes=('_dp', '_iqcp'), how='outer')
+df_merged_1 = df_merged_1.merge(df_ilp_nodes, on="experiment", suffixes=('', '_ilp'), how='outer')
+df_merged_1 = df_merged_1.merge(df_miqcp_nodes, on="experiment", suffixes=('', '_miqcp'), how='outer')
+df_merged_1 = df_merged_1.merge(df_greedy_nodes, on="experiment", suffixes=('', '_greedy'), how='outer')
+df_merged_1 = df_merged_1.merge(df_rollout_nodes, on="experiment", suffixes=('', '_rollout'), how='outer')
 
-df_merged_2 = df_dynamic_programming_2.merge(df_iqcp_2, on="experiment", suffixes=('_dp', '_iqcp'), how='outer')
-df_merged_2 = df_merged_2.merge(df_ilp_2, on="experiment", suffixes=('', '_ilp'), how='outer')
-df_merged_2 = df_merged_2.merge(df_miqcp_2, on="experiment", suffixes=('', '_miqcp'), how='outer')
-df_merged_2 = df_merged_2.merge(df_greedy_2, on="experiment", suffixes=('', '_greedy'), how='outer')
-df_merged_2 = df_merged_2.merge(df_rollout_2, on="experiment", suffixes=('', '_rollout'), how='outer')
+df_merged_2 = df_dynamic_programming_roots.merge(df_iqcp_roots, on="experiment", suffixes=('_dp', '_iqcp'), how='outer')
+df_merged_2 = df_merged_2.merge(df_ilp_roots, on="experiment", suffixes=('', '_ilp'), how='outer')
+df_merged_2 = df_merged_2.merge(df_miqcp_roots, on="experiment", suffixes=('', '_miqcp'), how='outer')
+df_merged_2 = df_merged_2.merge(df_greedy_roots, on="experiment", suffixes=('', '_greedy'), how='outer')
+df_merged_2 = df_merged_2.merge(df_rollout_roots, on="experiment", suffixes=('', '_rollout'), how='outer')
 
 df_merged_1['optimal_rollout'] = df_merged_1['n_nodes'] - df_merged_1['final_damage']
 df_merged_2['optimal_rollout'] = df_merged_2['n_nodes'] - df_merged_2['final_damage']
@@ -85,7 +89,7 @@ df_merged_1['diff_greedy_rollout'] = df_merged_1['optimal_rollout'] - df_merged_
 df_merged_2['diff_greedy_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_greedy']
 
 # Save merged dataframes to csv
-df_merged_1.to_csv("compare_results_1_1.csv", index=False)
-df_merged_2.to_csv("compare_results_1_2.csv", index=False)
+df_merged_1.to_csv(f"compare_results_{k}_nodes.csv", index=False)
+df_merged_2.to_csv(f"compare_results_{k}_roots.csv", index=False)
 
 print("Saved compare_results_1.csv and compare_results_2.csv")

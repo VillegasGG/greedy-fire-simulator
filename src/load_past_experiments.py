@@ -20,14 +20,8 @@ def load_experiments(dir="experiments"):
     return experiments_list
 
 # Load results from a directory
-def load_results(dir="experiments"):
-    files = []
-    for file in os.listdir(dir):
-        if file.startswith("results_") and file.endswith(".json"):
-            files.append(os.path.join(dir, file))
-    results_file = []
-    for file in files:
-        with open(file, 'r') as f:
-            data = json.load(f)
-            results_file.append(data)
-    return results_file
+def load_results(file_name, dir="experiments"):
+    file_path = os.path.join(dir, file_name)
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    return data

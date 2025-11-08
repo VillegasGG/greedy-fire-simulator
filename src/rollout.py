@@ -2,8 +2,18 @@ import time
 from greedyff.greedy_sim import GreedySim
 from greedyff.get_candidates_utils import get_candidates
 from greedyff.environment import Environment
+import multiprocessing
 
-def k_steps(env, k):
+def _worker(args):
+    env, candidate, k = args
+    env_copy = env.copy()
+    env_copy.move(int(candidate[0]))
+    if env_copy.firefighter.get_remaining_time() == 0:
+        env_copy.propagate()
+    damage, _ = k_steps(env_copy, k-1, paralel=False)
+    return (damage, candidate)
+
+def k_steps(env, k, paralel):
     '''
     Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
     '''
@@ -31,16 +41,35 @@ def k_steps(env, k):
         greedy_simulation_final = GreedySim(env=env, ff_speed=1)
         damage = greedy_simulation_final.run()
         return damage, None
+    
+    if paralel:
+        workers = multiprocessing.cpu_count()
+        print(f"Using {workers} workers for parallel {k}-steps")
+        
+        jobs = []
 
-    for candidate in candidates:
-        env_copy = env.copy()
-        env_copy.move(int(candidate[0]))
-        if env_copy.firefighter.get_remaining_time() == 0:
-            env_copy.propagate()
-        damage, _ = k_steps(env_copy, k-1)
-        if damage < min_damage:
-            min_damage = damage
-            best_candidate = candidate
+        for candidate in candidates:
+            args = (env, candidate, k)
+            jobs.append(args)
+
+        with multiprocessing.Pool(processes=workers) as pool:
+            damage_results = pool.map(_worker, jobs)
+        
+        for damage, candidate in damage_results:
+            if damage < min_damage:
+                min_damage = damage
+                best_candidate = candidate
+    else:
+        for candidate in candidates:
+            env_copy = env.copy()
+            env_copy.move(int(candidate[0]))
+            if env_copy.firefighter.get_remaining_time() == 0:
+                env_copy.propagate()
+            damage, _ = k_steps(env_copy, k-1, paralel=False)
+            if damage < min_damage:
+                min_damage = damage
+                best_candidate = candidate
+
     return min_damage, best_candidate
 
 def rollout(d_tree, ff_position, k):
@@ -72,7 +101,7 @@ def rollout(d_tree, ff_position, k):
             # Turno del bombero
             exist_candidate = True
             while env_rollout.firefighter.get_remaining_time() > 0 and exist_candidate:
-                _, best_candidate = k_steps(env_rollout, k)
+                _, best_candidate = k_steps(env_rollout, k, paralel=True)
                 if best_candidate is not None and int(best_candidate[0]) not in [int(node[0]) for node in solution]:
                     solution.append(best_candidate)
                 if best_candidate is None:
