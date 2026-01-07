@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #     json.dump(results, f, indent=4)
 
     # Testing greedy and rollout
-    id_test = 55
+    id_test = 65
     test = experiments[id_test-1]
     exp_id = test["id"]
     n_nodes = test["n_nodes"]

@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from load_past_experiments import load_results
 
-k=3
+k=1
 
 exact_results_nodes = "results_moving_nodes.json"
 exact_results_roots = "results_moving_roots.json"

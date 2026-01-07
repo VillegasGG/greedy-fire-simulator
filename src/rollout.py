@@ -8,8 +8,6 @@ def _worker(args):
     env, candidate, k = args
     env_copy = env.copy()
     env_copy.move(int(candidate[0]))
-    if env_copy.firefighter.get_remaining_time() == 0:
-        env_copy.propagate()
     damage, _ = k_steps(env_copy, k-1, paralel=False)
     print(f"Candidate {candidate[0]} results in damage {damage}")
     return (damage, candidate)
@@ -21,15 +19,13 @@ def k_steps(env, k, paralel):
 
     min_damage = float('inf')
     best_candidate = None
+
     t = env.firefighter.get_remaining_time()
 
     if k==0:
         greedy_simulation_final = GreedySim(env=env, ff_speed=1)
         damage = greedy_simulation_final.run()
         return damage, None  
-
-    if t is None or t <= 0:
-        env.firefighter.init_remaining_time()
 
     if env.firefighter.protecting_node is not None:
         node_to_protect = env.firefighter.protecting_node
@@ -72,8 +68,6 @@ def k_steps(env, k, paralel):
         for candidate in candidates:
             env_copy = env.copy()
             env_copy.move(int(candidate[0]))
-            if env_copy.firefighter.get_remaining_time() == 0:
-                env_copy.propagate()
             damage, _ = k_steps(env_copy, k-1, paralel=False)
             if damage < min_damage:
                 min_damage = damage
