@@ -11,6 +11,7 @@ def _worker(args):
     if env_copy.firefighter.get_remaining_time() == 0:
         env_copy.propagate()
     damage, _ = k_steps(env_copy, k-1, paralel=False)
+    print(f"Candidate {candidate[0]} results in damage {damage}")
     return (damage, candidate)
 
 def k_steps(env, k, paralel):
@@ -59,6 +60,14 @@ def k_steps(env, k, paralel):
             if damage < min_damage:
                 min_damage = damage
                 best_candidate = candidate
+                print(f"New best candidate {best_candidate} with damage {min_damage} at k={k}")
+                best_candidate_distance = env.firefighter.get_distance_to_node(candidate[0])
+            elif damage == min_damage:
+                candidate_distance = env.firefighter.get_distance_to_node(candidate[0])
+                if candidate_distance < best_candidate_distance:
+                    best_candidate = candidate
+                    best_candidate_distance = candidate_distance
+                print(f"Candidate {candidate[0]} ties with damage {damage}, selected closer one {best_candidate[0]}")
     else:
         for candidate in candidates:
             env_copy = env.copy()
@@ -69,6 +78,14 @@ def k_steps(env, k, paralel):
             if damage < min_damage:
                 min_damage = damage
                 best_candidate = candidate
+                best_candidate_distance = env.firefighter.get_distance_to_node(candidate[0])
+            elif damage == min_damage:
+                candidate_distance = env.firefighter.get_distance_to_node(candidate[0])
+                if candidate_distance < best_candidate_distance:
+                    best_candidate = candidate
+                    best_candidate_distance = candidate_distance
+                print(f"Candidate {candidate[0]} ties with damage {damage}, selected closer one {best_candidate[0]}")
+
 
     return min_damage, best_candidate
 
