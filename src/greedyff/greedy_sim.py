@@ -73,9 +73,12 @@ class GreedySim:
             - Turno del bombero dado que el anterior fue propagacion o inicio del fuego
             - Turno de la propagacion del fuego
         """
-        if self.env.firefighter.get_remaining_time() is None or self.env.firefighter.get_remaining_time() <= 0:
+        if self.env.firefighter.get_remaining_time() is None:
             self.env.firefighter.init_remaining_time()
-            # print(f"Step {step}: Firefighter's remaining time initialized to {self.env.firefighter.get_remaining_time()}")
+
+        elif self.env.firefighter.get_remaining_time() <= 0:
+            self.env.firefighter.init_remaining_time()
+            
 
         if not self.env.state.burning_nodes:
             self.env.start_fire(self.env.tree.root)
@@ -85,7 +88,6 @@ class GreedySim:
                 self.env.firefighter.position = self.ff_position
         else:
             self.firefighter_action()
-            # print(f"Step {step}: Firefighter's remaining time after action: {self.env.firefighter.get_remaining_time()}")
             self.env.propagate()
     
     def run_simulation(self):
@@ -94,6 +96,7 @@ class GreedySim:
         while not self.env.is_completely_burned():
             step += 1
             self.execute_step()
+
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)
