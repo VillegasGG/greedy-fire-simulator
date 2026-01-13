@@ -41,41 +41,41 @@ if __name__ == "__main__":
 
     results = []
 
-    # for exp in experiments:
-    #     print(f"Running test for experiment ID: {exp['id']}")
-    #     result = test_tree_rollout(exp, k)
-    #     results.append(result)
+    for exp in experiments:
+        print(f"Running test for experiment ID: {exp['id']}")
+        result = test_tree_rollout(exp, k)
+        results.append(result)
 
     # Save results to a json file
-    # with open(f"rollout_test_results_{k}.json", "w") as f:
-    #     json.dump(results, f, indent=4)
+    with open(f"rollout_test_results_{k}.json", "w") as f:
+        json.dump(results, f, indent=4)
 
     # Testing greedy and rollout
-    id_test = 65
-    test = experiments[id_test-1]
-    exp_id = test["id"]
-    n_nodes = test["n_nodes"]
-    positions = test["nodes_positions"]
-    prufer_sequence = test["sequence"]
-    root = test["root"]
-    initial_ff_position = test["initial_firefighter_position"] 
+    # id_test = 65
+    # test = experiments[id_test-1]
+    # exp_id = test["id"]
+    # n_nodes = test["n_nodes"]
+    # positions = test["nodes_positions"]
+    # prufer_sequence = test["sequence"]
+    # root = test["root"]
+    # initial_ff_position = test["initial_firefighter_position"] 
 
-    sequence = np.array(prufer_sequence)
-    tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
-    d_tree, _ = tree.convert_to_directed(root)
+    # sequence = np.array(prufer_sequence)
+    # tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
+    # d_tree, _ = tree.convert_to_directed(root)
 
-    print("GREEDY")
+    # print("GREEDY")
 
-    env = Environment(tree=d_tree, speed=1, ff_position=initial_ff_position, remaining_time=1)
-    g_sim = GreedySim(env=env, ff_speed=1)
-    damage = g_sim.run()
+    # env = Environment(tree=d_tree, speed=1, ff_position=initial_ff_position, remaining_time=1)
+    # g_sim = GreedySim(env=env, ff_speed=1)
+    # damage = g_sim.run()
 
-    print(f"Experiment ID: {exp_id}")
-    print(f"Nodes: {n_nodes}")
-    print(f"Greedy damage: {damage}")
+    # print(f"Experiment ID: {exp_id}")
+    # print(f"Nodes: {n_nodes}")
+    # print(f"Greedy damage: {damage}")
 
-    positions = test["nodes_positions"]
+    # positions = test["nodes_positions"]
 
-    print("ROLLOUT")
-    result = test_tree_rollout(test, k)
-    print(result)
+    # print("ROLLOUT")
+    # result = test_tree_rollout(test, k)
+    # print(result)
