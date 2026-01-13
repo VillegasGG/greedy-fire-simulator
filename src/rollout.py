@@ -41,6 +41,8 @@ def k_steps(env, k):
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
+    
+    print(f"Best candidate at k={k}: Node {best_candidate[0]} with damage {min_damage}")
     return min_damage, best_candidate
 
 def rollout(d_tree, ff_position, k):
@@ -66,7 +68,7 @@ def rollout(d_tree, ff_position, k):
     env_rollout = greedy_simulation.step()
 
     while env_rollout.is_completely_burned() == False:
-        if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() <= 0:
+        if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() == 0:
             env_rollout.firefighter.init_remaining_time()
         else:
             # Turno del bombero
