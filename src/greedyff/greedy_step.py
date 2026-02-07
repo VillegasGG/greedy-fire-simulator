@@ -32,7 +32,7 @@ class GreedyStep():
 
     def get_node_to_protect(self, candidates):
         """
-        Selecciona el nodo a proteger basado en el subarbol más grande
+        Select a node to protect based on the largest subtree
         """
 
         candidates_depths = {}
@@ -56,22 +56,18 @@ class GreedyStep():
     
     def select_action(self):
         """
-        - Seleccion de un nodo a proteger: se selecciona el nodo con el subarbol mas grande (aunque este mas lejos)
-        - Se mueve el bombero al nodo seleccionado
+        - Select a node to protect
+        - Move the firefighter to that node
 
         Returns False if no node to protect is found, True otherwise
         """
 
-        if(self.env.firefighter.protecting_node):
+        if self.env.firefighter.protecting_node:
             self.env.move(int(self.env.firefighter.protecting_node))
+            
             return True
         
         candidates = get_candidates(self.env.state.tree, self.env.state, self.env.firefighter)
-        for candidate in candidates:
-            if candidate[0] in self.env.state.burned_nodes or candidate[0] in self.env.state.burning_nodes:
-                print(f"Candidate {candidate[0]} is already burned, skipping.")
-
-
         node_to_protect, node_time = self.get_node_to_protect(candidates)
 
         if node_to_protect is None:

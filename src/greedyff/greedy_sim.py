@@ -75,8 +75,12 @@ class GreedySim:
             self.env.propagate()
             self.env.firefighter.init_remaining_time()
 
+        # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
         self.firefighter_action()
+
+        # Despues de la propagacion, se reinicia el tiempo del bombero para el siguiente turno
         self.env.propagate()
+        self.env.firefighter.init_remaining_time()
     
     def run_simulation(self):
         step = -1
@@ -84,6 +88,7 @@ class GreedySim:
         while not self.env.is_completely_burned():
             step += 1
             self.execute_step()
+            # print(f"Step {step}: Burned nodes: {len(self.env.state.burned_nodes)}, Burning nodes: {len(self.env.state.burning_nodes)}, Protected nodes: {len(self.env.state.protected_nodes)}")
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

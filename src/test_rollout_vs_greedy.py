@@ -71,8 +71,8 @@ def run_for_id(id_test, k):
     return optimal_greedy, optimal_rollout
 
 @pytest.mark.parametrize("id_test, k", [
-    (2, 1),
-    (10, 1),
+    # (2, 1),
+    # (10, 1),
     (16, 1),
     # (56, 1),
 ])

@@ -4,7 +4,7 @@ import numpy as np
 class Tree:
     def __init__(self, nodes, edges, nodes_positions=None, is_adjacency_matrix=False):
         """
-        Inicializa un objeto Tree
+        Initialize a Tree object
         """
         self.nodes = nodes
         self.nodes_positions = self.initialize_positions(nodes, nodes_positions)
@@ -15,7 +15,7 @@ class Tree:
     
     def initialize_positions(self, nodes, nodes_positions):
         """
-        Inicializa las posiciones de los nodos si se proporcionan
+        Initialize the positions of the nodes, if they are provided, otherwise return None
         """
         if(nodes_positions is not None):
             return np.array([nodes_positions[i] for i in nodes])
@@ -23,7 +23,7 @@ class Tree:
         
     def initialize_edges(self, nodes, edges, is_adjacency_matrix):
         """
-        Inicializa la matriz de adyacencia
+        Initialize the tree edges, either from an adjacency matrix or from a list of edges
         """
         if is_adjacency_matrix:
             return edges
@@ -51,14 +51,11 @@ class Tree:
 
     @property
     def is_directed(self):
-        """
-        Indica si el árbol ha sido convertido en dirigido
-        """
         return self.__is_directed__
 
     def __subtree_to_directed__(self, tree, node, visited):
         """
-        Convierte un subárbol a un árbol dirigido, comenzando desde el nodo dado
+        Transform the subtree rooted at node into a directed tree, and return its height
         """
         height = 0
         max_height = 0
@@ -75,9 +72,8 @@ class Tree:
                 
     def convert_to_directed(self, root):
         """
-        Convierte el árbol en un árbol dirigido y calcula su altura
+        Transform the tree into a directed tree with the given root, and return the directed tree and its height
         """
-        # Crea una copia del arbol actual
         directed_tree = Tree(
                     np.copy(self.nodes), 
                     np.copy(self.edges), 
@@ -85,7 +81,6 @@ class Tree:
                     is_adjacency_matrix=True
                 )
         
-        # Copia las direcciones de los nodos
         directed_tree.nodes_positions = np.copy(self.nodes_positions)
 
         visited = [False] * directed_tree.nodes.shape[0]
@@ -98,7 +93,7 @@ class Tree:
     
     def get_path_to_root(self, node):
         """
-        Obtiene el camino desde un nodo hasta la raíz del árbol.
+        Get the path from a node to the root of the tree.
         """
         assert self.__is_directed__, "The tree must be converted to directed"
 
@@ -117,7 +112,7 @@ class Tree:
         
     def get_subtree_nodes(self, node):
         """
-        Obtiene todos los nodos en el subárbol a partir de un nodo dado.
+        Get all nodes in the subtree starting from a given node.
         """
         assert self.__is_directed__, "The tree must be converted to directed"
 
@@ -139,11 +134,10 @@ class Tree:
     
     def get_neighbors(self, node):
         """
-        Devuelve una lista de los nodos vecinos de un nodo dado
+        Get a list of neighboring nodes for a given node.
         """
-        assert 0 <= node < len(self.nodes), "El índice del nodo está fuera de los límites"
+        assert 0 <= node < len(self.nodes), "Node index is out of bounds"
 
-        # Encuentra los índices de los nodos que son vecinos
         neighbors = np.argwhere(self.edges[node] == 1).flatten()
         
         return neighbors

@@ -25,12 +25,11 @@ def k_steps(env, k):
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
         damage, _ = k_steps(env_copy, k-1)
-        print(f"Candidate: {candidate}, Damage: {damage}")
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
 
-    print(f"Best candidate: {best_candidate}, Min damage: {min_damage}")
+    # print(f"Best candidate: {best_candidate}, Min damage: {min_damage}")
     return min_damage, best_candidate
 
 def get_rollout_candidates(env):

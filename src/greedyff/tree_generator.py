@@ -4,13 +4,13 @@ from greedyff.tree_utils import Tree
 
 def generate_prufer_sequence(n_nodes):
     """
-    Genera una secuencia de Prüfer aleatoria.
+    Generates a random Prüfer sequence.
     """
     return np.random.randint(0, n_nodes, size=n_nodes - 2)
 
 def calculate_degrees(sequence, n_nodes):
     """
-    Calcula los grados iniciales de los nodos basados en la secuencia de Prüfer.
+    Calculates the degrees of the nodes based on the Prüfer sequence
     """
     degrees = np.ones(n_nodes)
     counts = np.bincount(sequence, minlength=n_nodes)
@@ -19,7 +19,7 @@ def calculate_degrees(sequence, n_nodes):
 
 def add_edge(edges, node1, node2, degrees):
     """
-    Añade una arista al árbol y actualiza los grados de los nodos.
+    Add an edge to the tree and update the degrees of the nodes.
     """
     edges.append((node1, node2))
     degrees[node1] -= 1
@@ -27,7 +27,7 @@ def add_edge(edges, node1, node2, degrees):
 
 def generate_positions(n_nodes, edges):
     """
-    Genera posiciones 3D para los nodos del árbol utilizando NetworkX
+    Generate random positions for the nodes of the tree using a force-directed layout algorithm.
     """
     tree = nx.Graph()
     tree.add_nodes_from(np.arange(n_nodes))
@@ -36,15 +36,15 @@ def generate_positions(n_nodes, edges):
 
 def construct_edges(sequence, degrees):
     """
-    Construye una lista de aristas a partir de una secuencia de nodos y un array de grados.
+    Construct the edges of the tree based on the Prüfer sequence and the degrees of the nodes.
     """
     edges = []
-    # Construye las aristas a partir de la secuencia
+    # Construct edges from the sequence
     for node in sequence:
         leaf = np.argwhere(degrees == 1)[0, 0]
         add_edge(edges, node, leaf, degrees)
 
-    # Agrega la última arista
+    # Add the last edge
     remaining_nodes = np.argwhere(degrees == 1)[:, 0]
     assert remaining_nodes.shape[0] == 2, "There are more than 2 remaining degrees = 1"
     edges.append((remaining_nodes[1], remaining_nodes[0]))
@@ -52,7 +52,7 @@ def construct_edges(sequence, degrees):
 
 def create_tree_from_sequence(sequence, add_positions=True, positions=None):
     """
-    Crea un árbol a partir de una secuencia de Prüfer.
+    Create a Tree object from a given Prüfer sequence, optionally adding positions to the nodes.
     """
     n_nodes = sequence.shape[0] + 2
     degrees = calculate_degrees(sequence, n_nodes)
@@ -66,7 +66,7 @@ def create_tree_from_sequence(sequence, add_positions=True, positions=None):
 
 def validate_candidate_roots(type_root_degree, root_degree, counts):
     """
-    Valida y encuentra los nodos candidatos que cumplen con el criterio de grado raíz
+    Validates the candidate roots based on the degree of the root and the type of degree requirement.
     """
     if type_root_degree == "exact":
         return np.argwhere(counts == root_degree - 1).flatten()
@@ -77,7 +77,7 @@ def validate_candidate_roots(type_root_degree, root_degree, counts):
 
 def generate_random_tree(n_nodes, root_degree, type_root_degree, add_positions=True, max_trials=1000):    
     """
-    Genera un árbol aleatorio con un nodo raíz de un grado especificado
+    Generetes a random tree with a specified number of nodes and a root node with a specific degree.
     """
     for i in range(max_trials):
         sequence = generate_prufer_sequence(n_nodes)
