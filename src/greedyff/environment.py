@@ -4,7 +4,6 @@ import copy
 
 class Environment:
     def __init__(self, tree, speed, ff_position, remaining_time, fire_state=None):
-        self.tree = tree
         self.firefighter = Firefighter(tree, speed, ff_position, remaining_time)
 
         if fire_state is None:
@@ -19,7 +18,7 @@ class Environment:
         return copy.deepcopy(self)
     
     def start_fire(self, initial_node):
-        if initial_node in self.tree.nodes:
+        if initial_node in self.state.tree.nodes:
             self.state.burning_nodes.add(initial_node)
         else:
             raise ValueError("The initial node does not exist in the tree.")
@@ -28,7 +27,7 @@ class Environment:
         new_burning_nodes = set()
         
         for node in self.state.burning_nodes:
-            neighbors = self.tree.get_neighbors(node)  # Method in the Tree class to get neighboring nodes
+            neighbors = self.state.tree.get_neighbors(node)  # Method in the Tree class to get neighboring nodes
             for neighbor in neighbors:
                 if neighbor not in self.state.burned_nodes and neighbor not in self.state.burning_nodes:
                     if neighbor not in self.state.protected_nodes:    # If node is not defended, it will burn
@@ -47,7 +46,7 @@ class Environment:
             return False
 
         for node in self.state.burning_nodes:
-            neighbors = self.tree.get_neighbors(node)
+            neighbors = self.state.tree.get_neighbors(node)
             for neighbor in neighbors:
                 if neighbor not in self.state.burned_nodes and neighbor not in self.state.burning_nodes and neighbor not in self.state.protected_nodes:
                     return False
@@ -58,10 +57,10 @@ class Environment:
         Mueve al bombero al nodo indicado, ya sea completamente o parcialmente
         No recibe None como nodo!!
         """
-        if node not in self.tree.nodes:
+        if node not in self.state.tree.nodes:
             raise ValueError("The node to move to does not exist in the tree.")
         
-        node_position = self.tree.nodes_positions[node]
+        node_position = self.state.tree.nodes_positions[node]
         ff_remaining_time = self.firefighter.get_remaining_time()
         node_time = self.firefighter.calc_time_to_node(node)
 

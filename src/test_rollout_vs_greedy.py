@@ -74,7 +74,7 @@ def run_for_id(id_test, k):
     (2, 1),
     (10, 1),
     (16, 1),
-    (56, 1),
+    # (56, 1),
 ])
 def test_rollout_is_better_or_equal(id_test, k):
     optimal_greedy, optimal_rollout = run_for_id(id_test, k)

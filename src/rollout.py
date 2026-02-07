@@ -10,39 +10,37 @@ def k_steps(env, k):
 
     min_damage = float('inf')
     best_candidate = None
-    t = env.firefighter.get_remaining_time()
 
     if k==0:
-        greedy_simulation_final = GreedySim(env=env, ff_speed=1)
-        damage = greedy_simulation_final.run()
+        damage = GreedySim(env=env, ff_speed=1).run()
         return damage, None  
 
-    if t is None or t <= 0:
-        env.firefighter.init_remaining_time()
-
-    if env.firefighter.protecting_node is not None:
-        node_to_protect = env.firefighter.protecting_node
-        node_time_to_reach = env.firefighter.get_distance_to_node(node_to_protect) / env.firefighter.speed
-        candidates = [(node_to_protect, node_time_to_reach)]
-    else:
-        candidates = get_candidates(env.tree, env.state, env.firefighter)
+    candidates = get_rollout_candidates(env)
 
     if not candidates:
-        greedy_simulation_final = GreedySim(env=env, ff_speed=1)
-        damage = greedy_simulation_final.run()
+        damage = GreedySim(env=env, ff_speed=1).run()
         return damage, None
 
     for candidate in candidates:
         env_copy = env.copy()
         env_copy.move(int(candidate[0]))
-        if env_copy.firefighter.get_remaining_time() == 0:
-            env_copy.propagate()
         damage, _ = k_steps(env_copy, k-1)
+        print(f"Candidate: {candidate}, Damage: {damage}")
         if damage < min_damage:
             min_damage = damage
             best_candidate = candidate
 
+    print(f"Best candidate: {best_candidate}, Min damage: {min_damage}")
     return min_damage, best_candidate
+
+def get_rollout_candidates(env):
+    if env.firefighter.protecting_node is not None:
+        node_to_protect = env.firefighter.protecting_node
+        node_time_to_reach = env.firefighter.get_distance_to_node(node_to_protect) / env.firefighter.speed
+        candidates = [(node_to_protect, node_time_to_reach)]
+    else:
+        candidates = get_candidates(env.state.tree, env.state, env.firefighter)
+    return candidates
 
 def rollout(d_tree, ff_position, k):
     '''

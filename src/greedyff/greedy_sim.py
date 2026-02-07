@@ -5,7 +5,7 @@ class GreedySim:
     def __init__(self, env = None, ff_speed:float = 1.0):	
         if env is not None:
             self.env = env
-            self.d_tree = env.tree
+            self.d_tree =  env.state.tree
             self.ff_speed = env.firefighter.speed
             self.ff_position = env.firefighter.position
         else:
@@ -28,10 +28,6 @@ class GreedySim:
             # Generate directed tree from the provided tree
             self.d_tree, _ = tree.convert_to_directed(root)
 
-        # Save the tree structure and sequence to JSON files
-        # self.d_tree.save_positions(self.output_dir / "data" / "positions.txt")
-        # self.d_tree.save_edges(self.output_dir / "data" / "edges.txt")
-
         damage = self.run_simulation()
 
         return damage
@@ -46,7 +42,7 @@ class GreedySim:
             raise ValueError("Environment already exists, cannot provide a new one.")
         if self.env is None:
             self.env = env
-            self.d_tree = env.tree
+            self.d_tree = env.state.tree
             self.ff_speed = env.firefighter.speed
 
         self.execute_step()
@@ -61,32 +57,26 @@ class GreedySim:
         exist_candidate = True
 
         while(self.env.firefighter.get_remaining_time() > 0 and exist_candidate):
-            exist_candidate = GreedyStep(self.d_tree).select_action(self.env)
+            exist_candidate = GreedyStep(self.env).select_action()
             
     def execute_step(self):
         """
-        Ejecuta un paso de la simulacion:
-        A) Si no hay nodos quemados:
-            - Se inicia el fuego en el nodo raiz
-            - Se coloca un bombero en una posicion aleatoria
-        B) Si hay nodos quemados:
-            - Turno del bombero dado que el anterior fue propagacion o inicio del fuego
-            - Turno de la propagacion del fuego
+        Ejecuta un paso de la simulacion
         """
-        if self.env.firefighter.get_remaining_time() is None or self.env.firefighter.get_remaining_time() <= 0:
-            self.env.firefighter.init_remaining_time()
-            # print(f"Step {step}: Firefighter's remaining time initialized to {self.env.firefighter.get_remaining_time()}")
-
         if not self.env.state.burning_nodes:
-            self.env.start_fire(self.env.tree.root)
+            self.env.start_fire(self.env.state.tree.root)
             if self.env.firefighter.position is None:
                 self.env.firefighter.add_random_initial_position()
             else: 
                 self.env.firefighter.position = self.ff_position
-        else:
-            self.firefighter_action()
-            # print(f"Step {step}: Firefighter's remaining time after action: {self.env.firefighter.get_remaining_time()}")
+            self.env.firefighter.init_remaining_time()
+        
+        if self.env.firefighter.get_remaining_time() == 0:
             self.env.propagate()
+            self.env.firefighter.init_remaining_time()
+
+        self.firefighter_action()
+        self.env.propagate()
     
     def run_simulation(self):
         step = -1
