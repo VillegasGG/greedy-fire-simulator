@@ -41,11 +41,19 @@ if __name__ == "__main__":
 
     results = []
 
+    # Create new json file for results
+    with open(f"rollout_test_results_{k}.json", "w") as f:
+        json.dump([], f)
+
     for exp in experiments:
         print(f"Running test for experiment ID: {exp['id']}")
         result = test_tree_rollout(exp, k)
-        results.append(result)
+        
+        # Append result to json file
+        with open(f"rollout_test_results_{k}.json", "r") as f:
+            current_results = json.load(f)
 
-    # Save results to a json file
-    with open(f"rollout_test_results_{k}.json", "w") as f:
-        json.dump(results, f, indent=4)
+        current_results.append(result)
+
+        with open(f"rollout_test_results_{k}.json", "w") as f:
+            json.dump(current_results, f, indent=4)
