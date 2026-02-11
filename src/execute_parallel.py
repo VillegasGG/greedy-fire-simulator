@@ -57,3 +57,17 @@ if __name__ == "__main__":
 
         with open(f"rollout_parallel_test_results_{k}.json", "w") as f:
             json.dump(current_results, f, indent=4)
+
+    # Split results into nodes and roots
+    with open(f"rollout_parallel_test_results_{k}.json", "r") as f:
+        all_results = json.load(f)
+
+    # First 60 results are for nodes, the rest for roots
+    results_nodes = all_results[:60]
+    results_roots = all_results[60:]
+
+    with open(f"rollout_parallel_test_results_{k}_nodes.json", "w") as f:
+        json.dump(results_nodes, f, indent=4)
+
+    with open(f"rollout_parallel_test_results_{k}_roots.json", "w") as f:
+        json.dump(results_roots, f, indent=4)
