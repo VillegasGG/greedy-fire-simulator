@@ -1,0 +1,117 @@
+import time
+from greedyff.greedy_sim import GreedySim
+from greedyff.get_candidates_utils import get_candidates
+from greedyff.environment import Environment
+import multiprocessing as mp
+
+def _worker(args):
+    env, candidate, k = args
+    env_copy = env.copy()
+    env_copy.move(int(candidate[0]))
+    damage, _ = k_steps(env_copy, k-1, parallel=False)
+    return damage, candidate
+
+def k_steps(env, k, parallel):
+    '''
+    Perform k steps making copies of the environment for each candidate and performing a greedy simulation from there.
+    '''
+
+    min_damage = float('inf')
+    best_candidate = None
+
+    if k==0:
+        damage = GreedySim(env=env, ff_speed=1).run()
+        return damage, None  
+
+    candidates = get_rollout_candidates(env)
+
+    if not candidates:
+        damage = GreedySim(env=env, ff_speed=1).run()
+        return damage, None
+    
+    if parallel:
+        workers = mp.cpu_count()
+        print(f"Running in parallel with {workers} workers")
+
+        jobs = []
+
+        for candidate in candidates:
+            args = (env, candidate, k)
+            jobs.append(args)
+
+        with mp.Pool(workers) as pool:
+            damage_results = pool.map(_worker, jobs)
+
+        for damage, candidate in damage_results:
+            if damage < min_damage:
+                min_damage = damage
+                best_candidate = candidate
+    else:
+        for candidate in candidates:
+            env_copy = env.copy()
+            env_copy.move(int(candidate[0]))
+            damage, _ = k_steps(env_copy, k-1, parallel)
+            if damage < min_damage:
+                min_damage = damage
+                best_candidate = candidate
+
+    return min_damage, best_candidate
+
+def get_rollout_candidates(env):
+    if env.firefighter.protecting_node is not None:
+        node_to_protect = env.firefighter.protecting_node
+        node_time_to_reach = env.firefighter.get_distance_to_node(node_to_protect) / env.firefighter.speed
+        candidates = [(node_to_protect, node_time_to_reach)]
+    else:
+        candidates = get_candidates(env.state.tree, env.state, env.firefighter)
+    return candidates
+
+def parallel_rollout(d_tree, ff_position, k):
+    '''
+    Perform a rollout simulation on the given tree starting from the root node.
+    Args:
+        tree: The tree structure representing the environment.
+        ff_position: The initial position of the firefighter.
+        k: The number of steps to rollout at future, after that it will continue with greedy policy.
+    '''
+    start_time = time.perf_counter()
+
+    solution = []
+    final_damage = None
+
+    # Initialize the environment with the directed tree, firefighter speed, and position
+    env = Environment(d_tree, speed=1, ff_position=ff_position, remaining_time=1)
+
+    # Create a GreedySim instance with the environment
+    greedy_simulation = GreedySim(env=env, ff_speed=1)
+
+    # First step: initialize fire
+    env_rollout = greedy_simulation.step()
+
+    while not env_rollout.is_completely_burned():
+        execute_step(k, solution, env_rollout)
+
+    final_damage = len(env_rollout.state.burned_nodes) + len(env_rollout.state.burning_nodes)
+
+    end_time = time.perf_counter()
+
+    # Save report with the solution, damage, num nodes and time taken
+    solution = [int(node[0]) for node in solution if node is not None]
+
+    return solution, final_damage, end_time - start_time
+
+def execute_step(k, solution, env_rollout):
+
+    exist_candidate = True
+    while env_rollout.firefighter.get_remaining_time() > 0 and exist_candidate:
+        _, best_candidate = k_steps(env_rollout, k, parallel=True)
+        if best_candidate is None:
+            exist_candidate = False
+        else:
+            env_rollout.move(int(best_candidate[0]))
+            if int(best_candidate[0]) not in [int(node[0]) for node in solution]:
+                solution.append(best_candidate)
+    
+    env_rollout.propagate()
+    env_rollout.firefighter.init_remaining_time()
+
