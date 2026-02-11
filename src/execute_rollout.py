@@ -34,13 +34,9 @@ def test_tree_rollout(data, k):
 
     return result
 
-if __name__ == "__main__":
-    k=1
+def run_rollout(k):
     experiments = load_experiments()
     
-
-    results = []
-
     # Create new json file for results
     with open(f"rollout_test_results_{k}.json", "w") as f:
         json.dump([], f)
