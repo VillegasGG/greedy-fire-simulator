@@ -51,7 +51,7 @@ class GreedySim:
 
     def firefighter_action(self):
         """
-        Turno del bombero
+        Firefighter action while there are still candidates to protect and the firefighter has remaining time.
         """
 
         exist_candidate = True
@@ -61,7 +61,7 @@ class GreedySim:
             
     def execute_step(self):
         """
-        Ejecuta un paso de la simulacion
+        Execute a simulation step
         """
         if not self.env.state.burning_nodes:
             self.env.start_fire(self.env.state.tree.root)
@@ -78,7 +78,7 @@ class GreedySim:
         # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
         self.firefighter_action()
 
-        # Despues de la propagacion, se reinicia el tiempo del bombero para el siguiente turno
+        # After propagation, the firefighter's time is reset for the next turn
         self.env.propagate()
         self.env.firefighter.init_remaining_time()
     

@@ -1,6 +1,6 @@
 # 🔥 Greedy-fire-simulator
 
-A modular simulator for the Firefighter Problem in trees  using a greedy strategy. 
+A modular simulator for the Firefighter Problem in trees  using a rollout strategy. 
 
 This package models the fire spread. At each time step, the fire spreads to its neighbors that have not been protected by a firefighter.
 

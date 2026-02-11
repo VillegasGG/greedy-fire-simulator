@@ -27,7 +27,7 @@ class Firefighter:
     
     def get_distances_to_nodes(self, nodes):
         """
-        Obtiene la distancia de todos los nodos al bombero
+        Get distances to multiple nodes
         """
         distances = {}
         for node in nodes:

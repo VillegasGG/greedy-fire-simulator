@@ -13,7 +13,7 @@ class Environment:
 
     def copy(self):
         """
-        Copia el estado de la simulacion
+        Copy the environment
         """
         return copy.deepcopy(self)
     
@@ -40,7 +40,7 @@ class Environment:
 
     def is_completely_burned(self):
         """
-        Checa si ya no hay nodos por quemar
+        Check if there are no more nodes to burn
         """
         if not self.state.burning_nodes and not self.state.burned_nodes:
             return False
@@ -54,8 +54,8 @@ class Environment:
 
     def move(self, node):
         """
-        Mueve al bombero al nodo indicado, ya sea completamente o parcialmente
-        No recibe None como nodo!!
+        Move the firefighter to the indicated node, either completely or partially.
+        Does not accept None as a node!!
         """
         if node not in self.state.tree.nodes:
             raise ValueError("The node to move to does not exist in the tree.")
