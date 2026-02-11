@@ -29,7 +29,6 @@ def k_steps(env, k):
             min_damage = damage
             best_candidate = candidate
 
-    # print(f"Best candidate: {best_candidate}, Min damage: {min_damage}")
     return min_damage, best_candidate
 
 def get_rollout_candidates(env):
@@ -63,23 +62,8 @@ def rollout(d_tree, ff_position, k):
     # First step: initialize fire
     env_rollout = greedy_simulation.step()
 
-    while env_rollout.is_completely_burned() == False:
-        if env_rollout.firefighter.get_remaining_time() is None or env_rollout.firefighter.get_remaining_time() == 0:
-            env_rollout.firefighter.init_remaining_time()
-        else:
-            # Turno del bombero
-            exist_candidate = True
-            while env_rollout.firefighter.get_remaining_time() > 0 and exist_candidate:
-                _, best_candidate = k_steps(env_rollout, k)
-                if best_candidate is not None and int(best_candidate[0]) not in [int(node[0]) for node in solution]:
-                    solution.append(best_candidate)
-                if best_candidate is None:
-                    exist_candidate = False
-                else:
-                    env_rollout.move(int(best_candidate[0]))
-
-            # Turno de la propagacion del fuego
-            env_rollout.propagate()
+    while not env_rollout.is_completely_burned():
+        execute_step(k, solution, env_rollout)
 
     final_damage = len(env_rollout.state.burned_nodes) + len(env_rollout.state.burning_nodes)
 
@@ -88,12 +72,20 @@ def rollout(d_tree, ff_position, k):
     # Save report with the solution, damage, num nodes and time taken
     solution = [int(node[0]) for node in solution if node is not None]
 
-    # with open("rollout_report.txt", "w") as f:
-    #     f.write(f"Rollout Report\n")
-    #     f.write(f"====================\n")
-    #     f.write(f"Solution: {solution}\n")
-    #     f.write(f"Damage: {final_damage}\n")
-    #     f.write(f"Number of Nodes: {len(d_tree.nodes)}\n")
-    #     f.write(f"Time Taken: {end_time - start_time:.4f} seconds\n")
-
     return solution, final_damage, end_time - start_time
+
+def execute_step(k, solution, env_rollout):
+
+    exist_candidate = True
+    while env_rollout.firefighter.get_remaining_time() > 0 and exist_candidate:
+        _, best_candidate = k_steps(env_rollout, k)
+        if best_candidate is None:
+            exist_candidate = False
+        else:
+            env_rollout.move(int(best_candidate[0]))
+            if int(best_candidate[0]) not in [int(node[0]) for node in solution]:
+                solution.append(best_candidate)
+    
+    env_rollout.propagate()
+    env_rollout.firefighter.init_remaining_time()
+

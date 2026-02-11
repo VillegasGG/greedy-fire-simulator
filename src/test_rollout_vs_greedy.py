@@ -44,6 +44,11 @@ def run_for_id(id_test, k):
     prufer_sequence = test["sequence"]
     root = test["root"]
     initial_ff_position = test["initial_firefighter_position"] 
+    
+    print(f"Experiment ID: {exp_id}")
+    print(f"Nodes: {n_nodes}")
+    print(f"Root: {root}")
+    print(f"Initial firefighter position: {initial_ff_position}")
 
     sequence = np.array(prufer_sequence)
     tree = create_tree_from_sequence(sequence, add_positions=False, positions=positions)
@@ -71,12 +76,12 @@ def run_for_id(id_test, k):
     return optimal_greedy, optimal_rollout
 
 @pytest.mark.parametrize("id_test, k", [
-    # (2, 1),
-    # (10, 1),
+    (2, 1),
+    (10, 1),
     (16, 1),
-    # (56, 1),
+    (56, 1),
 ])
 def test_rollout_is_better_or_equal(id_test, k):
     optimal_greedy, optimal_rollout = run_for_id(id_test, k)
-    assert optimal_rollout >= optimal_greedy, f"Rollout damage {optimal_rollout} is not better than Greedy damage {optimal_greedy} for test ID {id_test}"
+    assert int(optimal_rollout) >= int(optimal_greedy), f"Optimal rollout {optimal_rollout} is not better than optimal greedy {optimal_greedy} for test ID {id_test}"
     

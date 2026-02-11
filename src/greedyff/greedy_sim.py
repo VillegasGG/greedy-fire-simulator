@@ -63,24 +63,22 @@ class GreedySim:
         """
         Execute a simulation step
         """
-        if not self.env.state.burning_nodes:
+
+        # If there are no burning nodes, start the fire at the root and initialize the firefighter position and remaining time
+        if not self.env.state.burning_nodes and not self.env.state.burned_nodes:
             self.env.start_fire(self.env.state.tree.root)
             if self.env.firefighter.position is None:
                 self.env.firefighter.add_random_initial_position()
             else: 
                 self.env.firefighter.position = self.ff_position
             self.env.firefighter.init_remaining_time()
-        
-        if self.env.firefighter.get_remaining_time() == 0:
+        # If is not the first step, execute firefighter action and propagate the fire if the firefighter has no remaining time
+        else:
+            self.firefighter_action()
+
+            # After propagation, the firefighter's time is reset for the next turn
             self.env.propagate()
             self.env.firefighter.init_remaining_time()
-
-        # print(f"Firefighter position: {self.env.firefighter.position}, Remaining time: {self.env.firefighter.get_remaining_time()}")
-        self.firefighter_action()
-
-        # After propagation, the firefighter's time is reset for the next turn
-        self.env.propagate()
-        self.env.firefighter.init_remaining_time()
     
     def run_simulation(self):
         step = -1
@@ -88,7 +86,6 @@ class GreedySim:
         while not self.env.is_completely_burned():
             step += 1
             self.execute_step()
-            # print(f"Step {step}: Burned nodes: {len(self.env.state.burned_nodes)}, Burning nodes: {len(self.env.state.burning_nodes)}, Protected nodes: {len(self.env.state.protected_nodes)}")
 
         # Return damage
         return len(self.env.state.burned_nodes) + len(self.env.state.burning_nodes)

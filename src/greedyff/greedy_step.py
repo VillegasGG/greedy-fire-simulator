@@ -61,10 +61,8 @@ class GreedyStep():
 
         Returns False if no node to protect is found, True otherwise
         """
-
-        if self.env.firefighter.protecting_node:
+        if self.env.firefighter.protecting_node is not None:
             self.env.move(int(self.env.firefighter.protecting_node))
-            
             return True
         
         candidates = get_candidates(self.env.state.tree, self.env.state, self.env.firefighter)
