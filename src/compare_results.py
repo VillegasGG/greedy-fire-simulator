@@ -88,6 +88,12 @@ df_merged_2['diff_miqcp_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2
 df_merged_1['diff_greedy_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal_greedy']
 df_merged_2['diff_greedy_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_greedy']
 
+# Delete all messages columns
+columns_to_drop_1 = [col for col in df_merged_1.columns if 'message' in col]
+df_merged_1 = df_merged_1.drop(columns=columns_to_drop_1)
+columns_to_drop_2 = [col for col in df_merged_2.columns if 'message' in col]
+df_merged_2 = df_merged_2.drop(columns=columns_to_drop_2)
+
 # Save merged dataframes to csv
 df_merged_1.to_csv(f"compare_results_{k}_nodes.csv", index=False)
 df_merged_2.to_csv(f"compare_results_{k}_roots.csv", index=False)
