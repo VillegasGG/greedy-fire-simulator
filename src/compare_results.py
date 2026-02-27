@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 from load_past_experiments import load_results
 
-k=1
+k=3
 
 exact_results_nodes = "results_moving_nodes.json"
 exact_results_roots = "results_moving_roots.json"
 
-rollout_results_nodes = f"rollout_parallel_test_results_{k}_nodes.json"
-rollout_results_roots = f"rollout_parallel_test_results_{k}_roots.json"
+rollout_results_nodes = f"rollout_test_results_{k}_nodes.json"
+rollout_results_roots = f"rollout_test_results_{k}_roots.json"
 
 with open(rollout_results_nodes, "r") as f:
     rollout_results_nodes = json.load(f)
@@ -73,17 +73,11 @@ df_merged_2 = df_merged_2.merge(df_rollout_roots, on="experiment", suffixes=('',
 df_merged_1['optimal_rollout'] = df_merged_1['n_nodes'] - df_merged_1['final_damage']
 df_merged_2['optimal_rollout'] = df_merged_2['n_nodes'] - df_merged_2['final_damage']
 
-df_merged_1['diff_dp_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal_dp']
-df_merged_2['diff_dp_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_dp']
-
 df_merged_1['diff_iqcp_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal_iqcp']
 df_merged_2['diff_iqcp_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_iqcp']
 
 df_merged_1['diff_ilp_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal']
 df_merged_2['diff_ilp_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal']
-
-df_merged_1['diff_miqcp_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal_miqcp']
-df_merged_2['diff_miqcp_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_miqcp']
 
 df_merged_1['diff_greedy_rollout'] = df_merged_1['optimal_rollout'] - df_merged_1['optimal_greedy']
 df_merged_2['diff_greedy_rollout'] = df_merged_2['optimal_rollout'] - df_merged_2['optimal_greedy']
@@ -95,7 +89,7 @@ columns_to_drop_2 = [col for col in df_merged_2.columns if 'message' in col]
 df_merged_2 = df_merged_2.drop(columns=columns_to_drop_2)
 
 # Save merged dataframes to csv
-df_merged_1.to_csv(f"compare_results_parallel_{k}_nodes.csv", index=False)
-df_merged_2.to_csv(f"compare_results_parallel_{k}_roots.csv", index=False)
+df_merged_1.to_csv(f"compare_results_{k}_nodes.csv", index=False)
+df_merged_2.to_csv(f"compare_results_{k}_roots.csv", index=False)
 
 print("Saved compare_results_1.csv and compare_results_2.csv")
